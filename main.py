@@ -45,7 +45,7 @@ def get_file_ext(filename):
     
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    return "Server API for ThinkNews!"
+    return "Server API for Notes!"
 
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():
