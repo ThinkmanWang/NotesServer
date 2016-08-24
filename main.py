@@ -50,7 +50,7 @@ def index():
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'GET':
-        return obj2json(RetModel(2, dict_err_code[2], {}) )
+        return obj2json(RetModel(1, dict_err_code[1], {}) )
       
     
     dictFiles = {};
