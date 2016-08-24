@@ -59,7 +59,7 @@ def upload_file():
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
         return obj2json(RetModel(0, dict_err_code[0], {}) )
     else:
-        return obj2json(RetModel(2, dict_err_code[2], {}) ) 
+        return obj2json(RetModel(10, dict_err_code[10], {}) ) 
     
 if __name__ == '__main__': 
     app.run(host='0.0.0.0', port=8080)
