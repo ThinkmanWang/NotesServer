@@ -37,9 +37,9 @@ dict_err_code = {
 }
 
 def allowed_file(filename):
-    return ('.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']) or filename == "data"
-    #return '.' in filename and \
-           #filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+    #return ('.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']) or filename == "data"
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 def get_file_ext(filename):
     if ('.' in filename):
