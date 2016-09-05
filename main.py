@@ -37,12 +37,13 @@ dict_err_code = {
 }
 
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
+    return ('.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']) or filename == "data"
+    #return '.' in filename and \
+           #filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 def get_file_ext(filename):
     if ('.' in filename):
-        return filename.rsplit('.', 1)[1]
+        return "." + filename.rsplit('.', 1)[1]
     else:
         return ""
 
@@ -65,7 +66,7 @@ def upload_file():
     if file1 and allowed_file(file1.filename):
         filename = secure_filename(file1.filename)
 
-        savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+        savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
         file1.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
         dictFiles["pic1"] = savedFileName;
 
@@ -77,7 +78,7 @@ def upload_file():
         if file2 and allowed_file(file2.filename):
             filename = secure_filename(file2.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file2.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic2"] = savedFileName;
 
@@ -89,7 +90,7 @@ def upload_file():
         if file3 and allowed_file(file3.filename):
             filename = secure_filename(file3.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file3.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic3"] = savedFileName;
 
@@ -101,7 +102,7 @@ def upload_file():
         if file4 and allowed_file(file4.filename):
             filename = secure_filename(file4.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file4.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic4"] = savedFileName;
 
@@ -113,7 +114,7 @@ def upload_file():
         if file5 and allowed_file(file5.filename):
             filename = secure_filename(file5.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file5.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic5"] = savedFileName;
 
@@ -125,7 +126,7 @@ def upload_file():
         if file6 and allowed_file(file6.filename):
             filename = secure_filename(file6.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file6.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic6"] = savedFileName;
 
@@ -137,7 +138,7 @@ def upload_file():
         if file7 and allowed_file(file7.filename):
             filename = secure_filename(file7.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file7.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic7"] = savedFileName;
 
@@ -149,7 +150,7 @@ def upload_file():
         if file8 and allowed_file(file8.filename):
             filename = secure_filename(file8.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file8.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic8"] = savedFileName;
 
@@ -161,7 +162,7 @@ def upload_file():
         if file9 and allowed_file(file9.filename):
             filename = secure_filename(file9.filename)
 
-            savedFileName = str(uuid.uuid4()) + "." + get_file_ext(filename)
+            savedFileName = str(uuid.uuid4()) + get_file_ext(filename)
             file9.save(os.path.join(app.config['UPLOAD_FOLDER'], savedFileName ) )
             dictFiles["pic9"] = savedFileName;
 
