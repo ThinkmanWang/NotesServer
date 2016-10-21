@@ -117,7 +117,7 @@ def insert_or_update_token(user):
                             , (szToken, nTime, nTime + (365*24*3600), user.id))
         conn.commit()
 
-        if (1 == count):
+        if (count >= 0):
             user.token = szToken
             user.create_time = nTime
             user.expire_time = nTime + (365*24*3600)
