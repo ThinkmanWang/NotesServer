@@ -2,7 +2,7 @@ class Customer(object):
     id = ''
     uid = 0
     name = ''
-    groupname = ''
+    group_name = ''
     spell = ''
     address = ''
     longitude = ''

@@ -23,7 +23,9 @@ from werkzeug import secure_filename
 from utils.mysql_python import MysqlPython
 from utils.object2json import obj2json
 from utils.user_db_utils import *  
+from utils.customer_db_utils import *
 from models.User import User
+from models.Customer import Customer
 from models.RetModel import RetModel
 
 app = Flask(__name__, static_url_path = "/upload", static_folder = "upload")
@@ -203,7 +205,7 @@ def get_customer_list():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -217,24 +219,42 @@ def get_customer():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))    
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/add_customer", methods=['POST', 'GET'])
-def add_note():
+def add_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    customer = Customer()
+    customer.id = request.form['id']
+    customer.uid = request.form['uid']
+    customer.name = request.form['name']
+    customer.group_name = request.form['group_name']
+    customer.spell = request.form['spell']
+    customer.address = request.form['address']
+    customer.longitude = request.form['longitude']
+    customer.latitude = request.form['latitude']
+    customer.boss = request.form['boss']
+    customer.phone = request.form['phone']
+    customer.email = request.form['email']
+    customer.description = request.form['description']
+    
+    if (True == insert_customer(request.form['uid'], customer)):
+        szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
+    
     return szRet
 
 @app.route("/api/update_customer", methods=['POST', 'GET'])
@@ -245,7 +265,7 @@ def update_customer():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -259,7 +279,7 @@ def delete_customer():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -274,7 +294,7 @@ def get_notes_id_list():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -288,21 +308,21 @@ def get_note():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/add_note", methods=['POST', 'GET'])
-def add_customer():
+def add_note():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -316,7 +336,7 @@ def update_note():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -330,7 +350,7 @@ def delete_note():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -345,7 +365,7 @@ def get_alarm_list():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -359,7 +379,7 @@ def get_alarm():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -373,7 +393,7 @@ def add_alarm():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -387,7 +407,7 @@ def update_alarm():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
@@ -401,7 +421,7 @@ def delete_alarm():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))    
     
-    if (False == verify_user_token(uid, token)):
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
