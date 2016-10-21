@@ -34,7 +34,34 @@ def get_all_users() :
     cur.close()
     return lstUser
 
+def if_user_exists(user_name):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()
+    cur.execute("select * from view_user where user_name=%s" , user_name)
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return False
+    else:
+        return True
+    
+def create_user(user_name):
+    #create user by cell phone number and send dynamic password
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    count = cur.execute("insert into user(user_name, password) values (%s, %s) " \
+                        , (user_name, hashlib.md5("123456").hexdigest()))
+    conn.commit()
+
+    if (1 == count):
+        return True
+    else:
+        return False    
+
 def user_login(user_name, password, verify):
+    if (False == if_user_exists(user_name)):
+        create_user(user_name)
+        
     conn = g_dbPool.connection()
     cur=conn.cursor()
     cur.execute("select * from view_user where user_name=%s AND password=%s" , (user_name, password))

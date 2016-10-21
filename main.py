@@ -38,6 +38,7 @@ dict_err_code = {
     , 20 : "user_name or password or verify code is incorrect"
     , 21 : "Token incorrect"
     , 1000 : "Unknow error"
+    , 1024 : "Developing"
 }
 
 def allowed_file(filename):
@@ -192,6 +193,9 @@ def login():
         szRet = obj2json(retModel)
             
     return szRet    
+
+#@app.route("/api/", methods=['POST', 'GET'])
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
