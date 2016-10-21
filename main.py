@@ -194,7 +194,83 @@ def login():
             
     return szRet    
 
-#@app.route("/api/", methods=['POST', 'GET'])
+#For Customer
+@app.route("/api/get_customer_list", methods=['POST', 'GET'])
+def get_customer_list():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/get_customer", methods=['POST', 'GET'])
+def get_customer():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/add_customer", methods=['POST', 'GET'])
+def add_note():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/update_customer", methods=['POST', 'GET'])
+def update_customer():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/delete_customer", methods=['POST', 'GET'])
+def delete_customer():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+#For notes
+@app.route("/api/get_notes_id_list", methods=['POST', 'GET'])
+def get_notes_id_list():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/get_note", methods=['POST', 'GET'])
+def get_note():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/add_note", methods=['POST', 'GET'])
+def add_customer():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/update_note", methods=['POST', 'GET'])
+def update_note():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/delete_note", methods=['POST', 'GET'])
+def delete_note():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+#For alarm
+@app.route("/api/get_alarm_list", methods=['POST', 'GET'])
+def get_alarm_list():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/get_alarm", methods=['POST', 'GET'])
+def get_alarm():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/add_alarm", methods=['POST', 'GET'])
+def add_alarm():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/update_alarm", methods=['POST', 'GET'])
+def update_alarm():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
+
+@app.route("/api/delete_alarm", methods=['POST', 'GET'])
+def delete_alarm():
+    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    return szRet
 
 
 if __name__ == '__main__':
