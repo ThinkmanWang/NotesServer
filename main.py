@@ -197,78 +197,108 @@ def login():
 #For Customer
 @app.route("/api/get_customer_list", methods=['POST', 'GET'])
 def get_customer_list():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/get_customer", methods=['POST', 'GET'])
 def get_customer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/add_customer", methods=['POST', 'GET'])
 def add_note():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/update_customer", methods=['POST', 'GET'])
 def update_customer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/delete_customer", methods=['POST', 'GET'])
 def delete_customer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 #For notes
 @app.route("/api/get_notes_id_list", methods=['POST', 'GET'])
 def get_notes_id_list():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/get_note", methods=['POST', 'GET'])
 def get_note():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/add_note", methods=['POST', 'GET'])
 def add_customer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/update_note", methods=['POST', 'GET'])
 def update_note():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/delete_note", methods=['POST', 'GET'])
 def delete_note():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 #For alarm
 @app.route("/api/get_alarm_list", methods=['POST', 'GET'])
 def get_alarm_list():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/get_alarm", methods=['POST', 'GET'])
 def get_alarm():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/add_alarm", methods=['POST', 'GET'])
 def add_alarm():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/update_alarm", methods=['POST', 'GET'])
 def update_alarm():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/delete_alarm", methods=['POST', 'GET'])
 def delete_alarm():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
