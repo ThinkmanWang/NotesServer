@@ -18,7 +18,7 @@ def insert_customer(uid, customer):
     conn = g_dbPool.connection()
     cur=conn.cursor()    
     count = cur.execute("insert into customer(id, uid, name, group_name, spell, address, longitude, latitude, boss, phone, email, description) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
-                        , (customer.uid, uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description))
+                        , (customer.id, uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description))
     conn.commit()
 
     if (1 == count):
