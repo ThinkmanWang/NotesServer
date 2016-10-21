@@ -22,6 +22,8 @@ from werkzeug import secure_filename
 
 from utils.mysql_python import MysqlPython
 from utils.object2json import obj2json
+from utils.user_db_utils import *  
+from models.User import User
 from models.RetModel import RetModel
 
 app = Flask(__name__, static_url_path = "/upload", static_folder = "upload")
@@ -33,6 +35,8 @@ dict_err_code = {
     , 1 : "Server support post only"
     , 10 : "Upload failed"
     , 11 : "No file"
+    , 20 : "user_name or password or verify code is incorrect"
+    , 21 : "Token incorrect"
     , 1000 : "Unknow error"
 }
 
@@ -170,6 +174,24 @@ def upload_file():
             return obj2json(RetModel(10, dict_err_code[10], {}) )
 
     return obj2json(RetModel(0, dict_err_code[0], dictFiles) )
+
+@app.route("/api/login", methods=['POST', 'GET'])
+def login():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )
+    if (request.form['user_name'] is None or request.form['password'] is None or request.form["verify_code"] is None):
+        return obj2json(RetModel(20, dict_err_code[20]))    
+    
+    user = user_login(request.form['user_name'], request.form['password'], request.form["verify_code"])
+    
+    szRet = ""
+    if (user == None):
+        szRet = obj2json(RetModel(1, "user_name or password is incorrect", {}) )
+    else:
+        retModel = RetModel(0, "success", user)
+        szRet = obj2json(retModel)
+            
+    return szRet    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
