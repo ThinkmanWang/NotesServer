@@ -199,6 +199,10 @@ def login():
 def get_customer_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -206,6 +210,10 @@ def get_customer_list():
 def get_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))    
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -213,6 +221,10 @@ def get_customer():
 def add_note():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -220,6 +232,10 @@ def add_note():
 def update_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -227,6 +243,10 @@ def update_customer():
 def delete_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -234,7 +254,11 @@ def delete_customer():
 @app.route("/api/get_notes_id_list", methods=['POST', 'GET'])
 def get_notes_id_list():
     if request.method == 'GET':
-        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+        return obj2json(RetModel(1, dict_err_code[1], {}) )   
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -242,6 +266,10 @@ def get_notes_id_list():
 def get_note():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -249,6 +277,10 @@ def get_note():
 def add_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -256,6 +288,10 @@ def add_customer():
 def update_note():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -263,6 +299,10 @@ def update_note():
 def delete_note():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -271,6 +311,10 @@ def delete_note():
 def get_alarm_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -278,6 +322,10 @@ def get_alarm_list():
 def get_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -285,13 +333,21 @@ def get_alarm():
 def add_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/update_alarm", methods=['POST', 'GET'])
 def update_alarm():
     if request.method == 'GET':
-        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+        return obj2json(RetModel(1, dict_err_code[1], {}) )  
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
@@ -299,6 +355,10 @@ def update_alarm():
 def delete_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form['uid'] is None or request.form['token'] is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
