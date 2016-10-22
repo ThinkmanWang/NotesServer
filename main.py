@@ -39,6 +39,7 @@ dict_err_code = {
     , 11 : "No file"
     , 20 : "user_name or password or verify code is incorrect"
     , 21 : "Token incorrect"
+    , 30 : "Customer not found"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
@@ -209,7 +210,7 @@ def get_customer_list():
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     lstCustomer = select_customer_list(request.form['uid'])
-    szRet = obj2json(RetModel(0, "success", lstCustomer) )
+    szRet = obj2json(RetModel(0, dict_err_code[0], lstCustomer) )
 
     return szRet
 
@@ -222,9 +223,15 @@ def get_customer():
         return obj2json(RetModel(21, dict_err_code[21]))    
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+        return obj2json(RetModel(21, dict_err_code[21], {}) )   
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    customer = select_customer(request.form['uid'], request.form['id'])
+    szRet = ""
+    if (customer is None):
+        szRet = obj2json(RetModel(30, dict_err_code[30], {}) )
+    else:
+        szRet = obj2json(RetModel(0, dict_err_code[0], customer) )
+        
     return szRet
 
 @app.route("/api/add_customer", methods=['POST', 'GET'])
@@ -269,9 +276,31 @@ def update_customer():
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    customer = Customer()
+    customer.id = request.form['id']
+    customer.uid = request.form['uid']
+    customer.name = request.form['name']
+    customer.group_name = request.form['group_name']
+    customer.spell = request.form['spell']
+    customer.address = request.form['address']
+    customer.longitude = request.form['longitude']
+    customer.latitude = request.form['latitude']
+    customer.boss = request.form['boss']
+    customer.phone = request.form['phone']
+    customer.email = request.form['email']
+    customer.description = request.form['description']
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    szRet = ''
+    if (False == if_customer_exists(customer)):
+        szRet = obj2json(RetModel(30, dict_err_code[30], {}) )
+    else:
+        if (True == update_customer_info(request.form['uid'], customer)):
+            szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+        else:
+            szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
+    
+    return szRet    
 
 @app.route("/api/delete_customer", methods=['POST', 'GET'])
 def delete_customer():

@@ -79,4 +79,33 @@ def select_customer_list(uid):
         lstCustomer.append(customer)
         
     cur.close()
-    return lstCustomer    
+    return lstCustomer   
+
+def select_customer(uid, id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select * from customer where id=%s and uid=%s" , (id, uid))
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return None
+    
+    row = rows[0]
+    customer = Customer()
+    customer.id = row['id']
+    customer.uid = row['uid']
+    customer.name = row['name']
+    customer.group_name = row['group_name']
+    customer.spell = row['spell']
+    
+    customer.address = row['address']
+    customer.longitude = row['longitude']
+    customer.latitude = row['latitude']
+    customer.boss = row['boss']
+    customer.phone = row['phone']
+    
+    customer.email = row['email']
+    customer.description = row['description']
+    
+    cur.close()
+    return customer   
