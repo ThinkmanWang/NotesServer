@@ -6,6 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'models'))
 
 from mysql_python import MysqlPython
 from models.User import User
+from models.Customer import Customer
 import MySQLdb
 from DBUtils.PooledDB import PooledDB
 import hashlib
@@ -30,7 +31,7 @@ def insert_customer(uid, customer):
 
 def if_customer_exists(customer):
     conn = g_dbPool.connection()
-    cur=conn.cursor()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("select * from customer where id=%s" , customer.id)
     
     rows=cur.fetchall()
@@ -49,4 +50,33 @@ def update_customer_info(uid, customer):
     if (count >= 0):
         return True
     else:
-        return False        
+        return False    
+    
+def select_customer_list(uid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select * from customer where uid=%s" , uid)
+    
+    rows=cur.fetchall()    
+    
+    lstCustomer = []
+    for row in rows:
+        customer = Customer()
+        customer.id = row['id']
+        customer.uid = row['uid']
+        customer.name = row['name']
+        customer.group_name = row['group_name']
+        customer.spell = row['spell']
+        
+        customer.address = row['address']
+        customer.longitude = row['longitude']
+        customer.latitude = row['latitude']
+        customer.boss = row['boss']
+        customer.phone = row['phone']
+        
+        customer.email = row['email']
+        customer.description = row['description']
+        lstCustomer.append(customer)
+        
+    cur.close()
+    return lstCustomer    

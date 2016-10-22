@@ -207,8 +207,10 @@ def get_customer_list():
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    lstCustomer = select_customer_list(request.form['uid'])
+    szRet = obj2json(RetModel(0, "success", lstCustomer) )
 
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
 
 @app.route("/api/get_customer", methods=['POST', 'GET'])
