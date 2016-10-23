@@ -10,5 +10,6 @@ class Note(object):
     note = ''
     thumbnail = ''
     pic = ''
+    update_date = 0
     
     

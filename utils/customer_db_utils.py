@@ -23,8 +23,8 @@ def insert_customer(uid, customer):
     else:
         conn = g_dbPool.connection()
         cur=conn.cursor()    
-        count = cur.execute("insert into customer(id, uid, name, group_name, spell, address, longitude, latitude, boss, phone, email, description) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
-                            , (customer.id, uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description))
+        count = cur.execute("insert into customer(id, uid, name, group_name, spell, address, longitude, latitude, boss, phone, email, description, update_date) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
+                            , (customer.id, uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, update_date))
         conn.commit()
         if (1 == count):
             return True
@@ -45,8 +45,8 @@ def if_customer_exists(customer):
 def update_customer_info(uid, customer):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update customer set uid = %s, name = %s, group_name = %s, spell = %s, address = %s, longitude = %s, latitude = %s, boss = %s, phone = %s, email = %s, description = %s where id = %s" \
-                , (uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, customer.id))
+    count = cur.execute("update customer set uid = %s, name = %s, group_name = %s, spell = %s, address = %s, longitude = %s, latitude = %s, boss = %s, phone = %s, email = %s, description = %s, update_date = %s where id = %s" \
+                , (uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, customer.update_date, customer.id))
     
     conn.commit()
     if (count >= 0):
@@ -78,6 +78,8 @@ def select_customer_list(uid):
         
         customer.email = row['email']
         customer.description = row['description']
+        customer.update_date = row['update_date']
+        
         lstCustomer.append(customer)
         
     cur.close()
@@ -108,6 +110,7 @@ def select_customer(uid, id):
     
     customer.email = row['email']
     customer.description = row['description']
+    customer.update_date = row['update_date']
     
     cur.close()
     return customer   

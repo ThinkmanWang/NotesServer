@@ -53,6 +53,7 @@ dict_err_code = {
     , 51 : "alarm id not exists"
     , 52 : "alarm note id not set"
     , 53 : "alarm date id not set"
+    , 54 : "alarm update_date id not set"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
@@ -274,6 +275,7 @@ def add_customer():
     customer.phone = request.form['phone']
     customer.email = request.form['email']
     customer.description = request.form['description']
+    customer.update_date = request.form['update_date']
     
     if (True == insert_customer(request.form['uid'], customer)):
         szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
@@ -306,6 +308,7 @@ def update_customer():
     customer.phone = request.form['phone']
     customer.email = request.form['email']
     customer.description = request.form['description']
+    customer.update_date = request.form['update_date']
     
     szRet = ''
     if (False == if_customer_exists(customer)):
@@ -387,6 +390,7 @@ def add_note():
     note.id = request.form['id']
     note.uid = request.form['uid']
     note.date = request.form['date']
+    note.update_date = request.form['update_date']
     note.customer_id = request.form['customer_id']
     note.address = request.form['address']
     note.longitude = request.form['longitude']
@@ -417,6 +421,7 @@ def update_note():
     note.id = request.form['id']
     note.uid = request.form['uid']
     note.date = request.form['date']
+    note.update_date = request.form['update_date']
     note.customer_id = request.form['customer_id']
     note.address = request.form['address']
     note.longitude = request.form['longitude']
@@ -496,7 +501,10 @@ def add_alarm():
         return obj2json(RetModel(52, dict_err_code[52]))       
     
     if (request.form['date'] is None):
-        return obj2json(RetModel(53, dict_err_code[53]))           
+        return obj2json(RetModel(53, dict_err_code[53]))   
+    
+    if (request.form['update_date'] is None):
+        return obj2json(RetModel(54, dict_err_code[54]))          
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )      
@@ -504,7 +512,7 @@ def add_alarm():
     if (False == if_noteid_exists(request.form['note_id'])):
         return obj2json(RetModel(41, dict_err_code[41]))  
     
-    if (True == insert_alarm(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'])):
+    if (True == insert_alarm(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'], request.form['update_date'])):
         szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
     else:
         szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
@@ -526,7 +534,10 @@ def update_alarm():
         return obj2json(RetModel(52, dict_err_code[52]))       
 
     if (request.form['date'] is None):
-        return obj2json(RetModel(53, dict_err_code[53]))     
+        return obj2json(RetModel(53, dict_err_code[53]))    
+    
+    if (request.form['update_date'] is None):
+        return obj2json(RetModel(54, dict_err_code[54]))        
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
@@ -538,11 +549,12 @@ def update_alarm():
     if (False == if_alarm_exists(request.form['id'])):
         szRet = obj2json(RetModel(51, dict_err_code[51], {}) )
     else:
-        if (True == update_alarm_info(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'])):
+        if (True == update_alarm_info(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'], request.form['update_date'])):
             szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
         else:
-            szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )    
-    
+            szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )  
+            
+    return szRet
 
 @app.route("/api/delete_alarm", methods=['POST', 'GET'])
 def delete_alarm():

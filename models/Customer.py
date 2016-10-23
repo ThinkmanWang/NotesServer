@@ -11,3 +11,4 @@ class Customer(object):
     phone = ''
     email = ''
     description = ''
+    update_date = 0

@@ -23,8 +23,8 @@ def insert_note(uid, note):
     else:
         conn = g_dbPool.connection()
         cur=conn.cursor()    
-        count = cur.execute("insert into notes(id, uid, date, customer_id, thumbnail, pic, address, longitude, latitude, note) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
-                            , (note.id, note.uid, note.date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note))
+        count = cur.execute("insert into notes(id, uid, date, update_date, customer_id, thumbnail, pic, address, longitude, latitude, note) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
+                            , (note.id, note.uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note))
         conn.commit()
         if (1 == count):
             return True
@@ -56,8 +56,8 @@ def if_noteid_exists(id):
 def update_note_info(uid, note):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update notes set uid=%s, date=%s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s" \
-                , (uid, note.date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id))
+    count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s" \
+                , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id))
     
     conn.commit()
     if (count >= 0):
@@ -101,6 +101,7 @@ def select_note(uid, id):
     note.note = row['note']
     note.thumbnail = row['thumbnail']
     note.pic = row['pic']    
+    note.update_date = row['update_date']
     
     cur.close()
     return note 

@@ -31,6 +31,7 @@ def select_alarm_list(uid):
         alarm.uid = row['uid']
         alarm.note_id = row['note_id']
         alarm.date = row['date']
+        alarm.update_date = row['update_date']
     
         lstAlarm.append(alarm)
         
@@ -38,14 +39,14 @@ def select_alarm_list(uid):
     return lstAlarm       
     
 
-def insert_alarm(uid, id, note_id, date):
+def insert_alarm(uid, id, note_id, date, update_date):
     if (True == if_alarm_exists(id)):
-        return update_alarm_info(uid, id, note_id, date)
+        return update_alarm_info(uid, id, note_id, date, update_date)
     else:
         conn = g_dbPool.connection()
         cur=conn.cursor()    
-        count = cur.execute("insert into alarm(id, uid, note_id, date) values (%s, %s, %s, %s) " \
-                            , (id, uid, note_id, date))
+        count = cur.execute("insert into alarm(id, uid, note_id, date, update_date) values (%s, %s, %s, %s, %s) " \
+                            , (id, uid, note_id, date, update_date))
         conn.commit()
         if (1 == count):
             return True
@@ -63,11 +64,11 @@ def if_alarm_exists(alarm_id):
     else:
         return True
     
-def update_alarm_info(uid, id, note_id, date):
+def update_alarm_info(uid, id, note_id, date, update_date):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update alarm set uid=%s, note_id=%s, date=%s where id = %s" \
-                , (uid, note_id, date, id))
+    count = cur.execute("update alarm set uid=%s, note_id=%s, date=%s, update_date = %s where id = %s" \
+                , (uid, note_id, date, update_date, id))
     
     conn.commit()
     if (count >= 0):
