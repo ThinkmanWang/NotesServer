@@ -46,7 +46,6 @@ def upload_file():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )
 
-
     dictFiles = {};
 
     if 'pic1' not in request.files:
