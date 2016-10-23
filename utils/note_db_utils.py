@@ -41,6 +41,17 @@ def if_note_exists(note):
         return False
     else:
         return True
+
+def if_noteid_exists(id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select * from notes where id=%s" , id)
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return False
+    else:
+        return True
     
 def update_note_info(uid, note):
     conn = g_dbPool.connection()

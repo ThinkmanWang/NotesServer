@@ -499,7 +499,10 @@ def add_alarm():
         return obj2json(RetModel(53, dict_err_code[53]))           
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )            
+        return obj2json(RetModel(21, dict_err_code[21], {}) )      
+    
+    if (False == if_noteid_exists(request.form['note_id'])):
+        return obj2json(RetModel(41, dict_err_code[41]))  
     
     if (True == insert_alarm(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'])):
         szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
@@ -514,10 +517,7 @@ def update_alarm():
         return obj2json(RetModel(1, dict_err_code[1], {}) )  
     
     if (request.form['uid'] is None or request.form['token'] is None):
-        return obj2json(RetModel(21, dict_err_code[21]))     
-    
-    if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+        return obj2json(RetModel(21, dict_err_code[21]))  
     
     if (request.form['id'] is None):
         return obj2json(RetModel(51, dict_err_code[51]))     
@@ -526,7 +526,13 @@ def update_alarm():
         return obj2json(RetModel(52, dict_err_code[52]))       
 
     if (request.form['date'] is None):
-        return obj2json(RetModel(53, dict_err_code[53]))           
+        return obj2json(RetModel(53, dict_err_code[53]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    if (False == if_noteid_exists(request.form['note_id'])):
+        return obj2json(RetModel(41, dict_err_code[41]))      
     
     szRet = ''
     if (False == if_alarm_exists(request.form['id'])):
@@ -551,6 +557,9 @@ def delete_alarm():
     
     if (request.form['id'] is None):
         return obj2json(RetModel(51, dict_err_code[51]))    
+    
+    if (if_alarm_exists(request.form['id'])):
+        return obj2json(RetModel(51, dict_err_code[51]))
 
     if (remove_alarm(request.form['id'])):
         return obj2json(RetModel(0, dict_err_code[0], {}) )
