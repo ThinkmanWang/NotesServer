@@ -30,7 +30,7 @@ def select_alarm_list(uid):
         alarm.id = row['id']
         alarm.uid = row['uid']
         alarm.note_id = row['note_id']
-        alarm.data = row['date']
+        alarm.date = row['date']
     
         lstAlarm.append(alarm)
         
