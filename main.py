@@ -26,6 +26,7 @@ from utils.object2json import obj2json
 from utils.user_db_utils import *  
 from utils.customer_db_utils import *
 from utils.note_db_utils import *
+from utils.alarm_db_utils import *
 
 from models.User import User
 from models.Note import Note
@@ -48,6 +49,10 @@ dict_err_code = {
     , 31 : "Customer id not found"
     , 40 : "note not found"
     , 41 : "note id not found"
+    , 50 : "alarm not found"
+    , 51 : "alarm id not exists"
+    , 52 : "alarm note id not set"
+    , 53 : "alarm date id not set"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
@@ -457,8 +462,10 @@ def get_alarm_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    lstAlarm = select_alarm_list(request.form['uid'])
+    szRet = obj2json(RetModel(0, dict_err_code[0], lstAlarm) )
+
+    return szRet    
 
 @app.route("/api/get_alarm", methods=['POST', 'GET'])
 def get_alarm():
@@ -482,11 +489,24 @@ def add_alarm():
     if (request.form['uid'] is None or request.form['token'] is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
+    if (request.form['id'] is None):
+        return obj2json(RetModel(51, dict_err_code[51]))     
+    
+    if (request.form['note_id'] is None):
+        return obj2json(RetModel(52, dict_err_code[52]))       
+    
+    if (request.form['date'] is None):
+        return obj2json(RetModel(53, dict_err_code[53]))           
+    
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+        return obj2json(RetModel(21, dict_err_code[21], {}) )            
+    
+    if (True == insert_alarm(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'])):
+        szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
 
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    return szRet    
 
 @app.route("/api/update_alarm", methods=['POST', 'GET'])
 def update_alarm():
@@ -499,8 +519,24 @@ def update_alarm():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    if (request.form['id'] is None):
+        return obj2json(RetModel(51, dict_err_code[51]))     
+    
+    if (request.form['note_id'] is None):
+        return obj2json(RetModel(52, dict_err_code[52]))       
+
+    if (request.form['date'] is None):
+        return obj2json(RetModel(53, dict_err_code[53]))           
+    
+    szRet = ''
+    if (False == if_alarm_exists(request.form['id'])):
+        szRet = obj2json(RetModel(51, dict_err_code[51], {}) )
+    else:
+        if (True == update_alarm_info(request.form['uid'], request.form['id'], request.form['note_id'], request.form['date'])):
+            szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+        else:
+            szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )    
+    
 
 @app.route("/api/delete_alarm", methods=['POST', 'GET'])
 def delete_alarm():
@@ -513,9 +549,13 @@ def delete_alarm():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    if (request.form['id'] is None):
+        return obj2json(RetModel(51, dict_err_code[51]))    
 
+    if (remove_alarm(request.form['id'])):
+        return obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
