@@ -22,9 +22,14 @@ from werkzeug import secure_filename
 
 from utils.mysql_python import MysqlPython
 from utils.object2json import obj2json
+
 from utils.user_db_utils import *  
 from utils.customer_db_utils import *
+from utils.note_db_utils import *
+
 from models.User import User
+from models.Note import Note
+from models.Alarm import Alarm
 from models.Customer import Customer
 from models.RetModel import RetModel
 
@@ -356,8 +361,24 @@ def add_note():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    note = Note()
+    note.id = request.form['id']
+    note.uid = request.form['uid']
+    note.date = request.form['date']
+    note.customer_id = request.form['customer_id']
+    note.address = request.form['address']
+    note.longitude = request.form['longitude']
+    note.latitude = request.form['latitude']
+    note.note = request.form['note']
+    note.thumbnail = request.form['thumbnail']
+    note.pic = request.form['pic']
+    
+    if (True == insert_note(request.form['uid'], note)):
+        szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
+
+    return szRet    
 
 @app.route("/api/update_note", methods=['POST', 'GET'])
 def update_note():

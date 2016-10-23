@@ -12,7 +12,9 @@ from DBUtils.PooledDB import PooledDB
 import hashlib
 import time
 
-g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
+from dbutils import * 
+
+#g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
 
 def insert_customer(uid, customer):
