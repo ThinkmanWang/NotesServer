@@ -51,3 +51,18 @@ def update_note_info(uid, note):
         return True
     else:
         return False    
+    
+def select_note_id_list(uid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    cur.execute("select id from notes where uid=%s" , uid)
+    rows=cur.fetchall()    
+    
+    lstNotesId = []
+    for row in rows:
+        noteId = {}
+        noteId['id'] = row['id']
+        lstNotesId.append(noteId)
+    
+    cur.close()
+    return lstNotesId       

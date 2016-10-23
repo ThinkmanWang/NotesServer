@@ -45,6 +45,7 @@ dict_err_code = {
     , 20 : "user_name or password or verify code is incorrect"
     , 21 : "Token incorrect"
     , 30 : "Customer not found"
+    , 40 : "note not found"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
@@ -333,8 +334,10 @@ def get_notes_id_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    lstNoteId = select_note_id_list(request.form['uid'])
+    szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
+
+    return szRet    
 
 @app.route("/api/get_note", methods=['POST', 'GET'])
 def get_note():
@@ -389,10 +392,30 @@ def update_note():
         return obj2json(RetModel(21, dict_err_code[21]))     
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+        return obj2json(RetModel(21, dict_err_code[21], {}) )   
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    note = Note()
+    note.id = request.form['id']
+    note.uid = request.form['uid']
+    note.date = request.form['date']
+    note.customer_id = request.form['customer_id']
+    note.address = request.form['address']
+    note.longitude = request.form['longitude']
+    note.latitude = request.form['latitude']
+    note.note = request.form['note']
+    note.thumbnail = request.form['thumbnail']
+    note.pic = request.form['pic']   
+    
+    szRet = ''
+    if (False == if_note_exists(note)):
+        szRet = obj2json(RetModel(40, dict_err_code[40], {}) )
+    else:
+        if (True == update_note_info(request.form['uid'], note)):
+            szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+        else:
+            szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
+    
+    return szRet    
 
 @app.route("/api/delete_note", methods=['POST', 'GET'])
 def delete_note():
