@@ -45,7 +45,9 @@ dict_err_code = {
     , 20 : "user_name or password or verify code is incorrect"
     , 21 : "Token incorrect"
     , 30 : "Customer not found"
+    , 31 : "Customer id not found"
     , 40 : "note not found"
+    , 41 : "note id not found"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
@@ -229,7 +231,10 @@ def get_customer():
         return obj2json(RetModel(21, dict_err_code[21]))    
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
-        return obj2json(RetModel(21, dict_err_code[21], {}) )   
+        return obj2json(RetModel(21, dict_err_code[21], {}) )  
+    
+    if (request.form['id'] is None):
+        return obj2json(RetModel(31, dict_err_code[31], {}) )  
     
     customer = select_customer(request.form['uid'], request.form['id'])
     szRet = ""
@@ -350,7 +355,16 @@ def get_note():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    if (request.form['id'] is None):
+        return obj2json(RetModel(41, dict_err_code[41], {}) )      
+    
+    note = select_note(request.form['uid'], request.form['id'])
+    szRet = ""
+    if (note is None):
+        szRet = obj2json(RetModel(40, dict_err_code[40], {}) )
+    else:
+        szRet = obj2json(RetModel(0, dict_err_code[0], note) )
+        
     return szRet
 
 @app.route("/api/add_note", methods=['POST', 'GET'])

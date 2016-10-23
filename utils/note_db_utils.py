@@ -6,14 +6,16 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'models'))
 #print(sys.path)
 
 from mysql_python import MysqlPython
-from models.User import User
-from models.Customer import Customer
 import MySQLdb
 from DBUtils.PooledDB import PooledDB
 import hashlib
 import time
 
 from dbutils import * 
+
+from models.User import User
+from models.Customer import Customer
+from models.Note import Note
 
 def insert_note(uid, note):
     if (True == if_note_exists(note)):
@@ -65,4 +67,29 @@ def select_note_id_list(uid):
         lstNotesId.append(noteId)
     
     cur.close()
-    return lstNotesId       
+    return lstNotesId    
+
+def select_note(uid, id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select * from view_notes where id=%s and uid=%s" , (id, uid))
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return None
+    
+    row = rows[0]
+    note = Note()
+    note.id = row['id']
+    note.date = row['date']
+    note.customer_id = row['customer_id']
+    note.customer_name = row['customer_name']
+    note.address = row['address']
+    note.longitude = row['longitude']
+    note.latitude = row['latitude'] 
+    note.note = row['note']
+    note.thumbnail = row['thumbnail']
+    note.pic = row['pic']    
+    
+    cur.close()
+    return note 
