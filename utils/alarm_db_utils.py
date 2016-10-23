@@ -79,7 +79,7 @@ def update_alarm_info(uid, id, note_id, date, update_date):
 def remove_alarm(id):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("delete from alarm id = %s", id)
+    count = cur.execute("delete from alarm where id = %s", id)
     
     conn.commit()
     if (1 == count):

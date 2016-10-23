@@ -570,8 +570,8 @@ def delete_alarm():
     if (request.form['id'] is None):
         return obj2json(RetModel(51, dict_err_code[51]))    
     
-    if (if_alarm_exists(request.form['id'])):
-        return obj2json(RetModel(51, dict_err_code[51]))
+    if (False == if_alarm_exists(request.form['id'])):
+        return obj2json(RetModel(51, dict_err_code[51], {}))
 
     if (remove_alarm(request.form['id'])):
         return obj2json(RetModel(0, dict_err_code[0], {}) )
