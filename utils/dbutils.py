@@ -12,4 +12,4 @@ from DBUtils.PooledDB import PooledDB
 import hashlib
 import time
 
-g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
+g_dbPool = PooledDB(MySQLdb, 5, host='123.59.78.245', user='notes', passwd='welc0me', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
