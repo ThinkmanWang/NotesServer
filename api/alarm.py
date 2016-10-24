@@ -37,10 +37,10 @@ def get_alarm_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form.get('uid', None) is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+    if (False == verify_user_token(request.form.get('uid', ''), request.form.get('token', ''))):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     lstAlarm = select_alarm_list(request.form['uid'])
@@ -53,7 +53,7 @@ def get_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
@@ -67,19 +67,19 @@ def add_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
-    if (request.form['id'] is None):
+    if (request.form.get('id', None) is None):
         return obj2json(RetModel(51, dict_err_code[51]))     
     
-    if (request.form['note_id'] is None):
+    if (request.form.get('note_id', None) is None):
         return obj2json(RetModel(52, dict_err_code[52]))       
     
-    if (request.form['date'] is None):
+    if (request.form.get('date', None) is None):
         return obj2json(RetModel(53, dict_err_code[53]))   
     
-    if (request.form['update_date'] is None):
+    if (request.form.get('update_date', None) is None):
         return obj2json(RetModel(54, dict_err_code[54]))          
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
@@ -100,19 +100,19 @@ def update_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )  
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))  
     
-    if (request.form['id'] is None):
+    if (request.form.get('id', None) is None):
         return obj2json(RetModel(51, dict_err_code[51]))     
     
-    if (request.form['note_id'] is None):
+    if (request.form.get('note_id', None) is None):
         return obj2json(RetModel(52, dict_err_code[52]))       
 
-    if (request.form['date'] is None):
+    if (request.form.get('date', None) is None):
         return obj2json(RetModel(53, dict_err_code[53]))    
     
-    if (request.form['update_date'] is None):
+    if (request.form.get('update_date', None) is None):
         return obj2json(RetModel(54, dict_err_code[54]))        
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
@@ -137,13 +137,13 @@ def delete_alarm():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))    
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    if (request.form['id'] is None):
+    if (request.form.get('id', None) is None):
         return obj2json(RetModel(51, dict_err_code[51]))    
     
     if (False == if_alarm_exists(request.form['id'])):
