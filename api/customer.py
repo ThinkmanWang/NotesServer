@@ -42,7 +42,7 @@ def get_customer_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
@@ -58,13 +58,13 @@ def get_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
-        return obj2json(RetModel(21, dict_err_code[21]))    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))   
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )  
     
-    if (request.form['id'] is None):
+    if (request.form.get('id', None) is None):
         return obj2json(RetModel(31, dict_err_code[31], {}) )  
     
     customer = select_customer(request.form['uid'], request.form['id'])
@@ -81,8 +81,8 @@ def add_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
-        return obj2json(RetModel(21, dict_err_code[21]))     
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))   
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
@@ -114,7 +114,7 @@ def update_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
@@ -151,8 +151,8 @@ def delete_customer():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
-    if (request.form['uid'] is None or request.form['token'] is None):
-        return obj2json(RetModel(21, dict_err_code[21]))     
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))      
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    

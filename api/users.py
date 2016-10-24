@@ -35,7 +35,7 @@ user_api = Blueprint('user_api', __name__)
 def login():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )
-    if (request.form['user_name'] is None or request.form['password'] is None or request.form["verify_code"] is None):
+    if (request.form.get('user_name', None) is None or request.form.get('password', None) is None or request.form.get("verify_code", None) is None):
         return obj2json(RetModel(20, dict_err_code[20]))    
     
     user = user_login(request.form['user_name'], request.form['password'], request.form["verify_code"])
