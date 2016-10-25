@@ -84,7 +84,7 @@ def user_login(user_name, password, verify):
 
     if (lstUser != None and len(lstUser) >= 1):
         userRet = lstUser[0]
-        userRet = insert_or_update_token(userRet)
+        userRet = insert_user_token(userRet)
         return userRet
     else:
         return None    
@@ -103,6 +103,31 @@ def verify_user_token(uid, token):
         return True
     else:
         return False
+    
+def insert_user_token(user):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    
+    try:
+        nTime = int(time.time())
+        szToken = ("%s%d" % (user.password, nTime))
+        szToken = hashlib.md5(szToken).hexdigest()        
+        
+        count = cur.execute("insert into token(uid, token, create_time, expire_time) values (%s, %s, %s, %s) " \
+                            , (user.id, szToken, nTime, nTime + (365*24*3600)))
+        conn.commit()
+
+        if (1 == count):
+            user.token = szToken
+            user.create_time = nTime
+            user.expire_time = nTime + (365*24*3600)
+            return user
+        else:
+            return None        
+    except MySQLdb.Error,e:
+        return lstGroup
+    finally:
+        cur.close()        
     
 def insert_or_update_token(user):
     conn = g_dbPool.connection()

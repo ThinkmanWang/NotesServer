@@ -35,12 +35,14 @@ from api.users import *
 from api.alarm import *
 from api.customer import *
 from api.notes import *
+from api.groups import *
 
 app.register_blueprint(alarm_api)
 app.register_blueprint(customer_api)
 app.register_blueprint(notes_api)
 app.register_blueprint(upload_api)
 app.register_blueprint(user_api)
+app.register_blueprint(groups_api)
 
 
 @app.route("/", methods=['POST', 'GET'])

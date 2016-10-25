@@ -15,6 +15,7 @@ dict_err_code = {
     , 53 : "alarm date id not set"
     , 54 : "alarm update_date id not set"
     , 60 : "group name not set"
+    , 61 : "update date not set"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
