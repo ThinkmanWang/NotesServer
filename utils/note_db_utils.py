@@ -87,7 +87,7 @@ def restore_note(note):
     cur=conn.cursor()            
     try:
         count = cur.execute("update notes set update_date=%s, is_deleted=0 where id=%s " \
-                            , (customer.update_date, customer.id))
+                            , (note.update_date, note.id))
         conn.commit()
         if (count >= 0):
             return True
@@ -137,7 +137,7 @@ def update_note_info(uid, note):
     conn = g_dbPool.connection()
     cur=conn.cursor()
     try:
-        count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s and update_date <= %" \
+        count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s, is_deleted=0 where id = %s and update_date <= %s" \
                     , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id, note.update_date))
         
         conn.commit()
@@ -233,3 +233,21 @@ def select_note(uid, id):
         return False
     finally:
         cur.close()    
+        
+def remove_note(uid, id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()
+    
+    try:
+        count = cur.execute("update notes set is_deleted=1, update_date=%s where id = %s", (int(time.time()), id))
+        
+        conn.commit()
+        if (count >= 0):
+            return True
+        else:
+            return False     
+    
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()     

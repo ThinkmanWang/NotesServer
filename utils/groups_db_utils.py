@@ -69,7 +69,7 @@ def update_group_time(uid, group_name, update_date):
     conn = g_dbPool.connection()
     cur=conn.cursor()            
     try:
-        count = cur.execute("update groups set update_date=%s where uid=%s and group_name=%s " \
+        count = cur.execute("update groups set update_date=%s is_deleted=0 where uid=%s and group_name=%s " \
                             , (update_date, uid, group_name))
         conn.commit()
         if (count >= 0):
@@ -192,7 +192,7 @@ def remove_group(uid, group_name):
         count = cur.execute("update groups set is_deleted=1, update_date=%s where uid=%s and group_name=%s" , (int(time.time()), uid, group_name))
         conn.commit()
         
-        if (count > 0):
+        if (count >= 0):
             return True
         else:
             return False    

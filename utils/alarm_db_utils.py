@@ -176,7 +176,7 @@ def update_alarm_info(uid, id, note_id, date, update_date):
     conn = g_dbPool.connection()
     cur=conn.cursor()
     try:
-        count = cur.execute("update alarm set uid=%s, note_id=%s, date=%s, update_date = %s where id = %s and update_date <= %s" \
+        count = cur.execute("update alarm set uid=%s, note_id=%s, date=%s, update_date = %s, is_deleted=0 where id = %s and update_date <= %s" \
                     , (uid, note_id, date, update_date, id, update_date))
         
         conn.commit()
@@ -195,10 +195,10 @@ def remove_alarm(id):
     cur=conn.cursor()
     
     try:
-        count = cur.execute("update alarm set is_delete=%s, update_date=%s where id = %s", (int(time.time()), id))
+        count = cur.execute("update alarm set is_deleted=1, update_date=%s where id = %s", (int(time.time()), id))
         
         conn.commit()
-        if (1 == count):
+        if (count >= 0):
             return True
         else:
             return False     

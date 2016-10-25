@@ -45,7 +45,7 @@ def get_notes_id_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    lstNoteId = select_note_id_list(request.form['uid'])
+    lstNoteId = select_note_id_list(request.form['uid'], request.form.get('type', 0))
     szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
 
     return szRet    
@@ -150,5 +150,11 @@ def delete_note():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
-    return szRet
+    if (request.form.get('id', None) is None):
+        return obj2json(RetModel(41, dict_err_code[41]))      
+    
+    if (remove_note(request.form['uid'], request.form['id'])):
+        return obj2json(RetModel(0, dict_err_code[0], {}) ) 
+    else:
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) )    
+    
