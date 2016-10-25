@@ -87,20 +87,35 @@ def add_customer():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
+    if (request.form.get('id', None) is None):
+        return obj2json(RetModel(31, dict_err_code[31], {}) )   
+    
+    if (request.form.get('name', None) is None):
+        return obj2json(RetModel(32, dict_err_code[32], {}) )      
+    
+    if (request.form.get('address', None) is None):
+        return obj2json(RetModel(33, dict_err_code[33], {}) )     
+    
+    if (request.form.get('longitude', None) is None):
+        return obj2json(RetModel(34, dict_err_code[34], {}) ) 
+    
+    if (request.form.get('latitude', None) is None):
+        return obj2json(RetModel(35, dict_err_code[35], {}) )     
+    
     customer = Customer()
     customer.id = request.form['id']
     customer.uid = request.form['uid']
-    customer.name = request.form['name']
-    customer.group_name = request.form['group_name']
-    customer.spell = request.form['spell']
+    customer.name = request.form.get['name']
+    customer.group_name = request.form.get('group_name', '')
+    customer.spell = request.form.get('spell', '')
     customer.address = request.form['address']
     customer.longitude = request.form['longitude']
     customer.latitude = request.form['latitude']
-    customer.boss = request.form['boss']
-    customer.phone = request.form['phone']
-    customer.email = request.form['email']
-    customer.description = request.form['description']
-    customer.update_date = request.form['update_date']
+    customer.boss = request.form.get('boss', '')
+    customer.phone = request.form.get('phone', '')
+    customer.email = request.form.get('email', '')
+    customer.description = request.form.get('description', '')
+    customer.update_date = request.form.get('update_date', int(time.time()))
     
     if (True == insert_customer(request.form['uid'], customer)):
         szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
@@ -119,21 +134,36 @@ def update_customer():
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    if (request.form.get('id', None) is None):
+        return obj2json(RetModel(31, dict_err_code[31], {}) )   
+    
+    if (request.form.get('name', None) is None):
+        return obj2json(RetModel(32, dict_err_code[32], {}) )      
+    
+    if (request.form.get('address', None) is None):
+        return obj2json(RetModel(33, dict_err_code[33], {}) )     
+    
+    if (request.form.get('longitude', None) is None):
+        return obj2json(RetModel(34, dict_err_code[34], {}) ) 
+    
+    if (request.form.get('latitude', None) is None):
+        return obj2json(RetModel(35, dict_err_code[35], {}) )       
 
     customer = Customer()
     customer.id = request.form['id']
     customer.uid = request.form['uid']
-    customer.name = request.form['name']
-    customer.group_name = request.form['group_name']
-    customer.spell = request.form['spell']
+    customer.name = request.form.get['name']
+    customer.group_name = request.form.get('group_name', '')
+    customer.spell = request.form.get('spell', '')
     customer.address = request.form['address']
     customer.longitude = request.form['longitude']
     customer.latitude = request.form['latitude']
-    customer.boss = request.form['boss']
-    customer.phone = request.form['phone']
-    customer.email = request.form['email']
-    customer.description = request.form['description']
-    customer.update_date = request.form['update_date']
+    customer.boss = request.form.get('boss', '')
+    customer.phone = request.form.get('phone', '')
+    customer.email = request.form.get('email', '')
+    customer.description = request.form.get('description', '')
+    customer.update_date = request.form.get('update_date', int(time.time()))
     
     szRet = ''
     if (False == if_customer_exists(customer)):
