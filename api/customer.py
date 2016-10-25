@@ -153,7 +153,7 @@ def update_customer():
     customer = Customer()
     customer.id = request.form['id']
     customer.uid = request.form['uid']
-    customer.name = request.form.get['name']
+    customer.name = request.form['name']
     customer.group_name = request.form.get('group_name', '')
     customer.spell = request.form.get('spell', '')
     customer.address = request.form['address']

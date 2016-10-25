@@ -78,9 +78,9 @@ def insert_alarm(uid, id, note_id, date, update_date):
     if (True == if_alarm_exists(id)):
         return update_alarm_info(uid, id, note_id, date, update_date)
     else:
-        if (is_alarm_deleted(alarm_id)):
-            if (is_alarm_need_restore(alarm_id, update_date)):
-                restore_alarm(alarm_id, update_date)
+        if (is_alarm_deleted(id)):
+            if (is_alarm_need_restore(id, update_date)):
+                restore_alarm(id, update_date)
                 return update_alarm_info(uid, id, note_id, date, update_date)
             else:
                 return True
