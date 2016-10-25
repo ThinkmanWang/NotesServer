@@ -34,7 +34,8 @@ def insert_customer(uid, customer):
                 if (1 == count):
                     return True
                 else:
-                    return False        
+                    return False      
+                
             except MySQLdb.Error,e:
                 return False
             finally:
@@ -42,25 +43,37 @@ def insert_customer(uid, customer):
 
 def if_customer_exists(customer):
     conn = g_dbPool.connection()
-    cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from customer where id=%s and is_deleted=0" , customer.id)
-    
-    rows=cur.fetchall()
-    if (len(rows) < 1):
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        cur.execute("select * from customer where id=%s and is_deleted=0" , customer.id)
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
+        
+    except MySQLdb.Error,e:
         return False
-    else:
-        return True
+    finally:
+        cur.close()     
     
 def is_customer_deleted(customer):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from customer where id=%s and is_deleted=1" , customer.id)
-    
-    rows=cur.fetchall()
-    if (len(rows) < 1):
+    try:
+        cur.execute("select * from customer where id=%s and is_deleted=1" , customer.id)
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
+        
+    except MySQLdb.Error,e:
         return False
-    else:
-        return True
+    finally:
+        cur.close()    
     
 def is_customer_need_restore(customer):
     conn = g_dbPool.connection()
@@ -76,6 +89,7 @@ def is_customer_need_restore(customer):
                 return True
         else:
             return False
+        
     except MySQLdb.Error,e:
         return False
     finally:
@@ -92,6 +106,7 @@ def restore_customer(customer):
             return True
         else:
             return False    
+        
     except MySQLdb.Error,e:
         return False
     finally:
@@ -100,14 +115,20 @@ def restore_customer(customer):
 def update_customer_info(uid, customer):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update customer set uid = %s, name = %s, group_name = %s, spell = %s, address = %s, longitude = %s, latitude = %s, boss = %s, phone = %s, email = %s, description = %s, update_date = %s where id = %s and update_date <= %s" \
-                , (uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, customer.update_date, customer.id, customer.update_date))
-    
-    conn.commit()
-    if (count >= 0):
-        return True
-    else:
-        return False   
+    try:
+        count = cur.execute("update customer set uid = %s, name = %s, group_name = %s, spell = %s, address = %s, longitude = %s, latitude = %s, boss = %s, phone = %s, email = %s, description = %s, update_date = %s where id = %s and update_date <= %s" \
+                    , (uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, customer.update_date, customer.id, customer.update_date))
+        
+        conn.commit()
+        if (count >= 0):
+            return True
+        else:
+            return False  
+        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()    
     
 def init_customer(row):
     customer = Customer()
@@ -139,42 +160,55 @@ def select_customer_list(uid, type = 0):
 def select_all_customer_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from customer where uid=%s" , uid)
-    
-    rows=cur.fetchall()    
-    
-    lstCustomer = []
-    for row in rows:
-        lstCustomer.append(init_customer(row))
+    try:
+        cur.execute("select * from customer where uid=%s" , uid)
         
-    cur.close()
-    return lstCustomer       
+        rows=cur.fetchall()    
+        
+        lstCustomer = []
+        for row in rows:
+            lstCustomer.append(init_customer(row))
+            return lstCustomer     
+        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()
     
 def select_exists_customer_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from customer where uid=%s and is_deleted=0" , uid)
-    
-    rows=cur.fetchall()    
-    
-    lstCustomer = []
-    for row in rows:
-        lstCustomer.append(init_customer(row))
+    try:
+        cur.execute("select * from customer where uid=%s and is_deleted=0" , uid)
         
-    cur.close()
-    return lstCustomer       
+        rows=cur.fetchall()    
+        
+        lstCustomer = []
+        for row in rows:
+            lstCustomer.append(init_customer(row))
+            
+        return lstCustomer     
+    
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()
 
 def select_customer(uid, id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from customer where id=%s and uid=%s and is_deleted=0" , (id, uid))
+    try:
+        cur.execute("select * from customer where id=%s and uid=%s and is_deleted=0" , (id, uid))
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return None
+        
+        row = rows[0]
+        customer = init_customer(row)    
+        return customer   
     
-    rows=cur.fetchall()
-    if (len(rows) < 1):
-        return None
-    
-    row = rows[0]
-    customer = init_customer(row)
-    
-    cur.close()
-    return customer   
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()
