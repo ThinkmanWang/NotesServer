@@ -21,8 +21,9 @@ def insert_customer(uid, customer):
         if (is_customer_deleted(customer)):
             if (is_customer_need_restore(customer)):
                 restore_customer(customer)
-            
-            return True
+                return update_customer_info(uid, customer)
+            else:
+                return True
       
         else:
             try:

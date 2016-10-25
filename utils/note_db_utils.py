@@ -21,75 +21,183 @@ def insert_note(uid, note):
     if (True == if_note_exists(note)):
         return update_note_info(uid, note)
     else:
-        conn = g_dbPool.connection()
-        cur=conn.cursor()    
-        count = cur.execute("insert into notes(id, uid, date, update_date, customer_id, thumbnail, pic, address, longitude, latitude, note) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
-                            , (note.id, note.uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note))
+        if (is_note_deleted(note.id)):
+            if (is_note_need_restore(note)):
+                restore_note(note)
+                return update_note_info(uid, note)
+            else:
+                return True
+        
+        else:        
+            conn = g_dbPool.connection()
+            cur=conn.cursor()    
+            try:
+                count = cur.execute("insert into notes(id, uid, date, update_date, customer_id, thumbnail, pic, address, longitude, latitude, note) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
+                                    , (note.id, note.uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note))
+                conn.commit()
+                if (1 == count):
+                    return True
+                else:
+                    return False 
+                
+            except MySQLdb.Error,e:
+                return False
+            finally:
+                cur.close()                
+        
+def is_note_deleted(note_id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        cur.execute("select * from notes where id=%s and is_deleted=1" , note_id)
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
+        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()    
+    
+def is_note_need_restore(note):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        if (is_note_deleted(note.id)):
+            #check the update_time and confirm if need restore group
+            cur.execute("select * from notes where id=%s and is_deleted=1 and update_time < %s" , (note.id, note.update_date) )    
+            rows=cur.fetchall()
+            if (len(rows) < 1):
+                return False    
+            else:
+                return True
+        else:
+            return False
+        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()     
+        
+def restore_note(note):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()            
+    try:
+        count = cur.execute("update notes set update_date=%s, is_deleted=0 where id=%s " \
+                            , (customer.update_date, customer.id))
         conn.commit()
-        if (1 == count):
+        if (count >= 0):
             return True
         else:
-            return False 
+            return False    
+        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()
+        
         
 def if_note_exists(note):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from notes where id=%s" , note.id)
+    try:
+        cur.execute("select * from notes where id=%s" , note.id)
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
     
-    rows=cur.fetchall()
-    if (len(rows) < 1):
+    except MySQLdb.Error,e:
         return False
-    else:
-        return True
+    finally:
+        cur.close()        
 
 def if_noteid_exists(id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from notes where id=%s" , id)
-    
-    rows=cur.fetchall()
-    if (len(rows) < 1):
+    try:
+        cur.execute("select * from notes where id=%s" , id)
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
+    except MySQLdb.Error,e:
         return False
-    else:
-        return True
+    finally:
+        cur.close()        
     
 def update_note_info(uid, note):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s and update_date <= %" \
-                , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id, note.update_date))
-    
-    conn.commit()
-    if (count >= 0):
-        return True
-    else:
-        return False    
-    
-def select_note_id_list(uid):
+    try:
+        count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s and update_date <= %" \
+                    , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id, note.update_date))
+        
+        conn.commit()
+        if (count >= 0):
+            return True
+        else:
+            return False    
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()     
+        
+def select_exists_note_id_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
-    cur.execute("select id from notes where uid=%s" , uid)
-    rows=cur.fetchall()    
-    
-    lstNotesId = []
-    for row in rows:
-        noteId = {}
-        noteId['id'] = row['id']
-        lstNotesId.append(noteId)
-    
-    cur.close()
-    return lstNotesId    
+    try:
+        cur.execute("select id from notes where uid=%s and is_deleted=0" , uid)
+        rows=cur.fetchall()    
+        
+        lstNotesId = []
+        for row in rows:
+            noteId = {}
+            noteId['id'] = row['id']
+            lstNotesId.append(noteId)
+        
+        return lstNotesId   
 
-def select_note(uid, id):
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()   
+        
+def select_all_note_id_list(uid):
     conn = g_dbPool.connection()
-    cur=conn.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("select * from view_notes where id=%s and uid=%s" , (id, uid))
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        cur.execute("select id from notes where uid=%s" , uid)
+        rows=cur.fetchall()    
+        
+        lstNotesId = []
+        for row in rows:
+            noteId = {}
+            noteId['id'] = row['id']
+            lstNotesId.append(noteId)
+        
+        return lstNotesId   
+
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()  
     
-    rows=cur.fetchall()
-    if (len(rows) < 1):
-        return None
     
-    row = rows[0]
+def select_note_id_list(uid, type=0):
+    if (0 == type):
+        return select_all_note_id_list(uid)
+    else:
+        return select_exists_note_id_list(uid)
+        
+def init_note(row):
     note = Note()
     note.id = row['id']
     note.date = row['date']
@@ -101,7 +209,27 @@ def select_note(uid, id):
     note.note = row['note']
     note.thumbnail = row['thumbnail']
     note.pic = row['pic']    
-    note.update_date = row['update_date']
+    note.update_date = row['update_date']    
+    note.is_deleted = row['is_deleted']
     
-    cur.close()
-    return note 
+    return note
+
+def select_note(uid, id):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        cur.execute("select * from view_notes where id=%s and uid=%s" , (id, uid))
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return None
+        
+        row = rows[0]
+        note = init_note(row)
+        
+        return note 
+    
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()    

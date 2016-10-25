@@ -81,8 +81,9 @@ def insert_alarm(uid, id, note_id, date, update_date):
         if (is_alarm_deleted(alarm_id)):
             if (is_alarm_need_restore(alarm_id, update_date)):
                 restore_alarm(alarm_id, update_date)
-        
-            return True
+                return update_alarm_info(uid, id, note_id, date, update_date)
+            else:
+                return True
     
         else:        
             conn = g_dbPool.connection()

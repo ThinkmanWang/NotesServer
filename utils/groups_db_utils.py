@@ -105,7 +105,7 @@ def insert_group(uid, group_name, update_date):
         if (is_group_deleted(uid, group_name, update_date)):
             if (is_group_need_restore(uid, group_name, update_date)):
                 restore_group(uid, group_name, update_date)
-                return True
+                return update_group_time(uid, group_name, update_date)
             else:
                 return True
         else:
