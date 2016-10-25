@@ -11,5 +11,6 @@ class Note(object):
     thumbnail = ''
     pic = ''
     update_date = 0
+    is_deleted = 0
     
     
