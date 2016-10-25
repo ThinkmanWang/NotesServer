@@ -56,8 +56,8 @@ def if_noteid_exists(id):
 def update_note_info(uid, note):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s" \
-                , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id))
+    count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s where id = %s and update_date <= %" \
+                , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id, note.update_date))
     
     conn.commit()
     if (count >= 0):
