@@ -15,7 +15,40 @@ import time
 
 from dbutils import * 
 
-def select_group_list(uid):
+def init_group(row):
+    group = Group()
+    group.id = row['id']
+    group.uid = row['uid']
+    group.group_name = row['group_name']    
+    group.update_date = row['update_date']     
+    group.is_deleted = row['is_deleted']     
+    
+    return group
+
+def select_group_list(uid, type):
+    if (0 == type):
+        return select_all_group_list(uid)
+    else:
+        return select_exists_group_list(uid)
+    
+def select_all_group_list(uid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    lstGroup = []
+    try:
+        cur.execute("select * from groups where uid=%s" , uid)
+        rows=cur.fetchall()    
+        
+        for row in rows:
+            lstGroup.append(init_group(row))
+        
+        return lstGroup      
+    except MySQLdb.Error,e:
+        return lstGroup
+    finally:
+        cur.close()         
+    
+def select_exists_group_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     lstGroup = []
@@ -24,13 +57,7 @@ def select_group_list(uid):
         rows=cur.fetchall()    
         
         for row in rows:
-            group = Group()
-            group.id = row['id']
-            group.uid = row['uid']
-            group.group_name = row['group_name']    
-            group.update_date = row['update_date']  
-            
-            lstGroup.append(group)
+            lstGroup.append(init_group(row))
         
         return lstGroup      
     except MySQLdb.Error,e:
