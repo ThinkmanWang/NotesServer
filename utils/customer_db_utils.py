@@ -81,8 +81,8 @@ def is_customer_need_restore(customer):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
         if (is_customer_deleted(customer)):
-            #check the update_time and confirm if need restore group
-            cur.execute("select * from customer where id=%s and is_deleted=1 and update_time < %s" , (customer.id, customer.update_date) )    
+            #check the update_date and confirm if need restore group
+            cur.execute("select * from customer where id=%s and is_deleted=1 and update_date < %s" , (customer.id, customer.update_date) )    
             rows=cur.fetchall()
             if (len(rows) < 1):
                 return False    

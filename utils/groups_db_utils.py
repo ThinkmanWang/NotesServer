@@ -161,7 +161,7 @@ def is_group_need_restore(uid, group_name, update_date):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
         if (is_group_deleted(uid, group_name, update_date)):
-            #check the update_time and confirm if need restore group
+            #check the update_date and confirm if need restore group
             cur.execute("select * from groups where uid=%s and group_name=%s and is_deleted=1" , (uid, group_name))    
             rows=cur.fetchall()
             if (len(rows) < 1):

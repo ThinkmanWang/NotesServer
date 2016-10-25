@@ -140,8 +140,8 @@ def is_alarm_need_restore(alarm_id, update_date):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
         if (is_alarm_deleted(alarm_id)):
-            #check the update_time and confirm if need restore group
-            cur.execute("select * from alarm where id=%s and is_deleted=1 and update_time < %s" , (alarm_id, update_date))    
+            #check the update_date and confirm if need restore group
+            cur.execute("select * from alarm where id=%s and is_deleted=1 and update_date < %s" , (alarm_id, update_date))    
             rows=cur.fetchall()
             if (len(rows) < 1):
                 return False    

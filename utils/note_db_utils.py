@@ -67,8 +67,8 @@ def is_note_need_restore(note):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
         if (is_note_deleted(note.id)):
-            #check the update_time and confirm if need restore group
-            cur.execute("select * from notes where id=%s and is_deleted=1 and update_time < %s" , (note.id, note.update_date) )    
+            #check the update_date and confirm if need restore group
+            cur.execute("select * from notes where id=%s and is_deleted=1 and update_date < %s" , (note.id, note.update_date) )    
             rows=cur.fetchall()
             if (len(rows) < 1):
                 return False    
