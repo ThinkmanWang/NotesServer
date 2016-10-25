@@ -49,7 +49,7 @@ def is_note_deleted(note_id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from notes where id=%s and is_deleted=1" , note_id)
+        cur.execute("select * from notes where id=%s and is_deleted=1" , (note_id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -104,7 +104,7 @@ def if_note_exists(note):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from notes where id=%s" , note.id)
+        cur.execute("select * from notes where id=%s" , (note.id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -121,7 +121,7 @@ def if_noteid_exists(id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from notes where id=%s" , id)
+        cur.execute("select * from notes where id=%s" , (id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -154,7 +154,7 @@ def select_exists_note_id_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
-        cur.execute("select id from notes where uid=%s and is_deleted=0" , uid)
+        cur.execute("select id from notes where uid=%s and is_deleted=0" , (uid, ))
         rows=cur.fetchall()    
         
         lstNotesId = []
@@ -174,7 +174,7 @@ def select_all_note_id_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
-        cur.execute("select id from notes where uid=%s" , uid)
+        cur.execute("select id from notes where uid=%s" , (uid, ))
         rows=cur.fetchall()    
         
         lstNotesId = []

@@ -36,7 +36,7 @@ def select_all_group_list(uid):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     lstGroup = []
     try:
-        cur.execute("select * from groups where uid=%s" , uid)
+        cur.execute("select * from groups where uid=%s" , (uid, ))
         rows=cur.fetchall()    
         
         for row in rows:
@@ -53,7 +53,7 @@ def select_exists_group_list(uid):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     lstGroup = []
     try:
-        cur.execute("select * from groups where uid=%s and is_deleted=0" , uid)
+        cur.execute("select * from groups where uid=%s and is_deleted=0" , (uid, ))
         rows=cur.fetchall()    
         
         for row in rows:

@@ -46,7 +46,7 @@ def if_customer_exists(customer):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
-        cur.execute("select * from customer where id=%s and is_deleted=0" , customer.id)
+        cur.execute("select * from customer where id=%s and is_deleted=0" , (customer.id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -63,7 +63,7 @@ def is_customer_deleted(customer):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from customer where id=%s and is_deleted=1" , customer.id)
+        cur.execute("select * from customer where id=%s and is_deleted=1" , (customer.id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -162,7 +162,7 @@ def select_all_customer_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from customer where uid=%s" , uid)
+        cur.execute("select * from customer where uid=%s" , (uid, ))
         
         rows=cur.fetchall()    
         
@@ -180,7 +180,7 @@ def select_exists_customer_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from customer where uid=%s and is_deleted=0" , uid)
+        cur.execute("select * from customer where uid=%s and is_deleted=0" , (uid, ))
         
         rows=cur.fetchall()    
         

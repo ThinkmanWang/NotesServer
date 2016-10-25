@@ -39,7 +39,7 @@ def get_all_users() :
 def if_user_exists(user_name):
     conn = g_dbPool.connection()
     cur=conn.cursor()
-    cur.execute("select * from view_user where user_name=%s" , user_name)
+    cur.execute("select * from view_user where user_name=%s" , (user_name, ))
     
     rows=cur.fetchall()
     if (len(rows) < 1):

@@ -34,7 +34,7 @@ def select_exists_alarm_list(uid):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     
     try:
-        cur.execute("select * from alarm where uid=%s and is_deleted=0" , uid)  
+        cur.execute("select * from alarm where uid=%s and is_deleted=0" , (uid, ))  
         rows=cur.fetchall()
         
         lstAlarm = []
@@ -53,7 +53,7 @@ def select_all_alarm_list(uid):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     
     try:
-        cur.execute("select * from alarm where uid=%s" , uid)  
+        cur.execute("select * from alarm where uid=%s" , (uid, ))  
         rows=cur.fetchall()
         
         lstAlarm = []
@@ -105,7 +105,7 @@ def if_alarm_exists(alarm_id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from alarm where id=%s and is_deleted=0" , alarm_id)
+        cur.execute("select * from alarm where id=%s and is_deleted=0" , (alarm_id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -122,7 +122,7 @@ def is_alarm_deleted(alarm_id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from alarm where id=%s and is_deleted=1" , alarm_id)
+        cur.execute("select * from alarm where id=%s and is_deleted=1" , (alarm_id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
