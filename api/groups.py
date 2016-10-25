@@ -86,4 +86,4 @@ def delete_group():
     if (remove_group(request.form['uid'], request.form['group_name'])):
         return obj2json(RetModel(0, dict_err_code[0], {}) ) 
     else:
-        return obj2json(RetModel(1024, dict_err_code[1024], {}) )
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) )

@@ -42,10 +42,10 @@ def update_group_time(uid, group_name, update_date):
     conn = g_dbPool.connection()
     cur=conn.cursor()            
     try:
-        count = cur.execute("update groups set update_date=%s where uid=%d and group_name=%s " \
+        count = cur.execute("update groups set update_date=%s where uid=%s and group_name=%s " \
                             , (update_date, uid, group_name))
         conn.commit()
-        if (1 == count):
+        if (count >= 0):
             return True
         else:
             return False    
@@ -58,7 +58,7 @@ def restore_group(uid, group_name, update_date):
     conn = g_dbPool.connection()
     cur=conn.cursor()            
     try:
-        count = cur.execute("update groups set update_date=%s, is_deleted=1 where uid=%d and group_name=%s " \
+        count = cur.execute("update groups set update_date=%s, is_deleted=0 where uid=%s and group_name=%s " \
                             , (update_date, uid, group_name))
         conn.commit()
         if (count >= 0):
@@ -143,7 +143,7 @@ def is_group_need_restore(uid, group_name, update_date):
                 row = rows[0]
                 _update_date = row['update_date']
                 
-                if (update_date > _update_date):
+                if (int(update_date) > int(_update_date)):
                     return True
                 else:
                     return False
@@ -162,13 +162,13 @@ def remove_group(uid, group_name):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     
     try:
-        cur.execute("update groups set is_deleted=1, update_date=%s where uid=%s and group_name=%s" , (int(time.time()), uid, group_name))
+        count = cur.execute("update groups set is_deleted=1, update_date=%s where uid=%s and group_name=%s" , (int(time.time()), uid, group_name))
+        conn.commit()
         
-        rows=cur.fetchall()
-        if (len(rows) < 1):
-            return False
+        if (count > 0):
+            return True
         else:
-            return True    
+            return False    
     except MySQLdb.Error,e:
         return False
     finally:
