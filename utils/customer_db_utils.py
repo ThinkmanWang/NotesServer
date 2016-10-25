@@ -153,7 +153,7 @@ def init_customer(row):
     return customer
     
 def select_customer_list(uid, type = 0):
-    if (0 == type):
+    if (type.isdigit() and 0 == int(type)):
         return select_all_customer_list(uid)
     else:
         return select_exists_customer_list(uid)

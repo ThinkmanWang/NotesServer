@@ -68,7 +68,7 @@ def select_all_alarm_list(uid):
         cur.close()
 
 def select_alarm_list(uid, type = 0):
-    if (0 == type):
+    if (type.isdigit() and 0 == int(type)):
         return select_all_alarm_list(uid)
     else:
         return select_exists_alarm_list(uid)          
