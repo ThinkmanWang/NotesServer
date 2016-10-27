@@ -63,7 +63,7 @@ def get_group_list():
     if (False == verify_user_token(request.form.get('uid', ''), request.form.get('token', ''))):
         return obj2json(RetModel(21, dict_err_code[21], {}) )   
     
-    lstGroup = select_group_list(request.form['uid'], request.form.get('type', 0))
+    lstGroup = select_group_list(request.form['uid'], request.form.get('type', '0'))
     szRet = obj2json(RetModel(0, dict_err_code[0], lstGroup) )        
 
     return szRet    

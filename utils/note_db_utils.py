@@ -150,52 +150,50 @@ def update_note_info(uid, note):
     finally:
         cur.close()     
         
-def select_exists_note_id_list(uid):
+def select_exists_note_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    lstNotes = []
     try:
-        cur.execute("select id from notes where uid=%s and is_deleted=0" , (uid, ))
-        rows=cur.fetchall()    
+
+        cur.execute("select * from view_notes where uid=%s and is_deleted=0" , (uid, ))
         
-        lstNotesId = []
+        rows=cur.fetchall()
         for row in rows:
-            noteId = {}
-            noteId['id'] = row['id']
-            lstNotesId.append(noteId)
+            lstNotes.append(init_note(row))
         
-        return lstNotesId   
+        return lstNotes 
 
     except MySQLdb.Error,e:
-        return False
+        return lstNotes 
     finally:
-        cur.close()   
+        cur.close()  
         
-def select_all_note_id_list(uid):
+def select_all_note_list(uid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    lstNotes = []
     try:
-        cur.execute("select id from notes where uid=%s" , (uid, ))
-        rows=cur.fetchall()    
+
+        cur.execute("select * from view_notes where uid=%s" , (uid, ))
         
-        lstNotesId = []
+        rows=cur.fetchall()
         for row in rows:
-            noteId = {}
-            noteId['id'] = row['id']
-            lstNotesId.append(noteId)
+            lstNotes.append(init_note(row))
         
-        return lstNotesId   
+        return lstNotes 
 
     except MySQLdb.Error,e:
-        return False
+        return lstNotes 
     finally:
         cur.close()  
     
     
-def select_note_id_list(uid, type=0):
+def select_note_list(uid, type=0):
     if (type.isdigit() and 0 == int(type)):
-        return select_all_note_id_list(uid)
+        return select_all_note_list(uid)
     else:
-        return select_exists_note_id_list(uid)
+        return select_exists_note_list(uid)
         
 def init_note(row):
     note = Note()

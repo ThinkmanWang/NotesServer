@@ -34,8 +34,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'models'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'utils'))
 
 #For notes
-@notes_api.route("/api/get_notes_id_list", methods=['POST', 'GET'])
-def get_notes_id_list():
+
+@notes_api.route("/api/get_notes_list", methods=['POST', 'GET'])
+def get_notes_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )   
     
@@ -45,7 +46,7 @@ def get_notes_id_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    lstNoteId = select_note_id_list(request.form['uid'], request.form.get('type', 0))
+    lstNoteId = select_note_list(request.form['uid'], request.form.get('type', '0'))
     szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
 
     return szRet    
