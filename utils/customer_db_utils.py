@@ -169,7 +169,8 @@ def select_all_customer_list(uid):
         lstCustomer = []
         for row in rows:
             lstCustomer.append(init_customer(row))
-            return lstCustomer     
+        
+        return lstCustomer     
         
     except MySQLdb.Error,e:
         return False
