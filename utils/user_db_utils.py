@@ -207,6 +207,9 @@ def db_query_users():
             user = {}
             user["id"] = row["id"]
             user["user_name"] = row["user_name"]
+            user["avatar"] = row["avatar"]
+            user["show_name"] = row["show_name"]
+            user["title"] = row["title"]
             lstUser.append(user)
 
 
