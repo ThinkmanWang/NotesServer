@@ -163,3 +163,34 @@ def insert_or_update_token(user):
             return user
         else:
             return None
+
+
+def db_is_user_exists(szUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()
+    cur.execute("select * from view_user where id=%s" , (szUid, ))
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return False
+    else:
+        return True
+
+def db_set_user_leader(szUid, szLeaderUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    
+    try:
+        count = cur.execute("update user set leader_uid=%s where id=%s" \
+                            , (szLeaderUid, szUid))
+        conn.commit()
+
+        if (count >= 0):
+            return True
+        else:
+            return False        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()        
+    

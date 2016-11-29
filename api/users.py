@@ -30,6 +30,7 @@ from error_code import *
 
 from flask import Blueprint
 user_api = Blueprint('user_api', __name__)
+import pdb
 
 @user_api.route("/api/login", methods=['POST', 'GET'])
 def login():
@@ -48,3 +49,27 @@ def login():
         szRet = obj2json(retModel)
             
     return szRet 
+
+
+@user_api.route("/api/set_leader", methods=['POST', 'GET'])
+def set_leader():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+	
+    if (request.form.get('leader_id', None) is None):
+        return obj2json(RetModel(70, dict_err_code[70], {}) )    
+	
+    if (False == db_is_user_exists(request.form["leader_id"])):
+        return obj2json(RetModel(71, dict_err_code[71], {}) )    
+	
+    if (False == db_set_user_leader(request.form['uid'], request.form["leader_id"])):
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+
+    return obj2json(RetModel(0, dict_err_code[0], {}) )    
+
