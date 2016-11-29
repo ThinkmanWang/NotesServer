@@ -197,16 +197,16 @@ def db_set_user_leader(szUid, szLeaderUid):
 
 def db_query_users():
     conn = g_dbPool.connection()
-    cur=conn.cursor()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("select * from user")
 
     try:
         rows=cur.fetchall()
         lstUser = []
         for row in rows:
-            user = User()
-            user.id = row[0]
-            user.user_name = row[1]
+            user = {}
+            user["id"] = row["id"]
+            user["user_name"] = row["user_name"]
             lstUser.append(user)
 
 
