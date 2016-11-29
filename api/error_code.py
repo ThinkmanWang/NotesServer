@@ -26,6 +26,8 @@ dict_err_code = {
     , 61 : "update date not set"
     , 70 : "leader id not set"
     , 71 : "leader id not found"
+    , 72 : "avatar not set"
+    , 73 : "show_name not set"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }

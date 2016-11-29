@@ -221,3 +221,22 @@ def db_query_users():
         return None
     finally:
         cur.close()        
+
+
+def db_update_user_info(szUid, avatar, show_name):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    
+    try:
+        count = cur.execute("update user set avatar=%s, show_name=%s where id=%s" \
+                            , (avatar, show_name, szUid))
+        conn.commit()
+
+        if (count >= 0):
+            return True
+        else:
+            return False        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()        

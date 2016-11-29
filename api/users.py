@@ -80,7 +80,33 @@ def query_users():
     
     if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
         return obj2json(RetModel(21, dict_err_code[21]))     
+
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
     lstUser = db_query_users()
     return obj2json(RetModel(0, dict_err_code[0], lstUser) )
+
+@user_api.route("/api/update_user_info", methods=['POST', 'GET'])
+def update_user_info():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    if (request.form.get('avatar', None) is None):
+        return obj2json(RetModel(72, dict_err_code[72]))     
+
+    if (request.form.get('show_name', None) is None):
+        return obj2json(RetModel(73, dict_err_code[73]))     
+
+    if (db_update_user_info(request.form["uid"], request.form["avatar"], request.form["show_name"])):
+        return obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) )
+
 
