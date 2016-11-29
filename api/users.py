@@ -73,3 +73,14 @@ def set_leader():
 
     return obj2json(RetModel(0, dict_err_code[0], {}) )    
 
+@user_api.route("/api/query_users", methods=['POST', 'GET'])
+def query_users():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    lstUser = db_query_users()
+    return obj2json(RetModel(0, dict_err_code[0], lstUser) )
+

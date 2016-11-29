@@ -194,3 +194,27 @@ def db_set_user_leader(szUid, szLeaderUid):
     finally:
         cur.close()        
     
+
+def db_query_users():
+    conn = g_dbPool.connection()
+    cur=conn.cursor()
+    cur.execute("select * from user")
+
+    try:
+        rows=cur.fetchall()
+        lstUser = []
+        for row in rows:
+            user = User()
+            user.id = row[0]
+            user.user_name = row[1]
+            lstUser.append(user)
+
+
+        if (lstUser != None and len(lstUser) >= 1):
+            return lstUser
+        else:
+            return None    
+    except MySQLdb.Error,e:
+        return None
+    finally:
+        cur.close()        
