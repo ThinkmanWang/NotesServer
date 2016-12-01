@@ -30,6 +30,7 @@ from error_code import *
 
 from flask import Blueprint
 user_api = Blueprint('user_api', __name__)
+import pdb
 
 @user_api.route("/api/login", methods=['POST', 'GET'])
 def login():
@@ -48,3 +49,79 @@ def login():
         szRet = obj2json(retModel)
             
     return szRet 
+
+
+@user_api.route("/api/set_leader", methods=['POST', 'GET'])
+def set_leader():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+	
+    if (request.form.get('leader_id', None) is None):
+        return obj2json(RetModel(70, dict_err_code[70], {}) )    
+	
+    if (False == db_is_user_exists(request.form["leader_id"])):
+        return obj2json(RetModel(71, dict_err_code[71], {}) )    
+	
+    if (False == db_set_user_leader(request.form['uid'], request.form["leader_id"])):
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+
+    return obj2json(RetModel(0, dict_err_code[0], {}) )    
+
+@user_api.route("/api/query_users", methods=['POST', 'GET'])
+def query_users():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    lstUser = db_query_users()
+    return obj2json(RetModel(0, dict_err_code[0], lstUser) )
+
+@user_api.route("/api/update_user_info", methods=['POST', 'GET'])
+def update_user_info():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    if (request.form.get('avatar', None) is None):
+        return obj2json(RetModel(72, dict_err_code[72]))     
+
+    if (request.form.get('show_name', None) is None):
+        return obj2json(RetModel(73, dict_err_code[73]))     
+
+    if (db_update_user_info(request.form["uid"], request.form["avatar"], request.form["show_name"])):
+        return obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) )
+
+@user_api.route("/api/get_user_profile", methods=['POST', 'GET'])
+def get_user_profile():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    userProfile = db_query_user_profile(request.form['uid'])
+    if (userProfile is None):
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+    else:
+        return obj2json(RetModel(0, dict_err_code[0], userProfile) )

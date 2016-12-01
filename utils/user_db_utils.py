@@ -163,3 +163,116 @@ def insert_or_update_token(user):
             return user
         else:
             return None
+
+
+def db_is_user_exists(szUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()
+    cur.execute("select * from view_user where id=%s" , (szUid, ))
+    
+    rows=cur.fetchall()
+    if (len(rows) < 1):
+        return False
+    else:
+        return True
+
+def db_set_user_leader(szUid, szLeaderUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    
+    try:
+        count = cur.execute("update user set leader_uid=%s where id=%s" \
+                            , (szLeaderUid, szUid))
+        conn.commit()
+
+        if (count >= 0):
+            return True
+        else:
+            return False        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()        
+    
+
+def db_query_users():
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select * from user")
+
+    try:
+        rows=cur.fetchall()
+        lstUser = []
+        for row in rows:
+            user = {}
+            user["id"] = row["id"]
+            user["user_name"] = row["user_name"]
+            user["avatar"] = row["avatar"]
+            user["show_name"] = row["show_name"]
+            user["title"] = row["title"]
+            lstUser.append(user)
+
+
+        if (lstUser != None and len(lstUser) >= 1):
+            return lstUser
+        else:
+            return None    
+    except MySQLdb.Error,e:
+        return None
+    finally:
+        cur.close()        
+
+
+def db_update_user_info(szUid, avatar, show_name):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    
+    try:
+        count = cur.execute("update user set avatar=%s, show_name=%s where id=%s" \
+                            , (avatar, show_name, szUid))
+        conn.commit()
+
+        if (count >= 0):
+            return True
+        else:
+            return False        
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()        
+
+def db_query_user_profile(szUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select id, user_name, avatar, leader_uid" \
+            " , (select d.show_name from user as d where d.id=a.leader_uid) as leader_name" \
+            " , show_name, (select count(*) from user as b where b.leader_uid=a.id) as member_count " \
+            " , (select count(*) from notes as c where c.uid=a.id) as note_count from user as a where a.id=%s;" \
+            , (szUid, ))
+
+    try:
+        rows=cur.fetchall()
+        if (0 == len(rows)):
+            return None
+        
+        row = rows[0]
+        userProfile = {}
+
+        userProfile["id"] = row["id"]
+        userProfile["user_name"] = row["user_name"]
+        userProfile["avatar"] = row["avatar"]
+        userProfile["leader_uid"] = row["leader_uid"]
+        userProfile["leader_name"] = row["leader_name"]
+
+        userProfile["show_name"] = row["show_name"]
+        userProfile["member_count"] = row["member_count"]
+        userProfile["note_count"] = row["note_count"]
+
+        return userProfile
+
+
+    except MySQLdb.Error,e:
+        return None
+    finally:
+        cur.close()        
+
