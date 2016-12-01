@@ -109,4 +109,19 @@ def update_user_info():
     else:
         return obj2json(RetModel(1000, dict_err_code[1000], {}) )
 
-
+@user_api.route("/api/get_user_profile", methods=['POST', 'GET'])
+def get_user_profile():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    userProfile = db_query_user_profile(request.form['uid'])
+    if (userProfile is None):
+        return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+    else:
+        return obj2json(RetModel(0, dict_err_code[0], userProfile) )

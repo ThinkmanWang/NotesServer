@@ -240,3 +240,39 @@ def db_update_user_info(szUid, avatar, show_name):
         return False
     finally:
         cur.close()        
+
+def db_query_user_profile(szUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select id, user_name, avatar, leader_uid" \
+            " , (select d.show_name from user as d where d.id=a.leader_uid) as leader_name" \
+            " , show_name, (select count(*) from user as b where b.leader_uid=a.id) as member_count " \
+            " , (select count(*) from notes as c where c.uid=a.id) as note_count from user as a where a.id=%s;" \
+            , (szUid, ))
+
+    try:
+        rows=cur.fetchall()
+        if (0 == len(rows)):
+            return None
+        
+        row = rows[0]
+        userProfile = {}
+
+        userProfile["id"] = row["id"]
+        userProfile["user_name"] = row["user_name"]
+        userProfile["avatar"] = row["avatar"]
+        userProfile["leader_uid"] = row["leader_uid"]
+        userProfile["leader_name"] = row["leader_name"]
+
+        userProfile["show_name"] = row["show_name"]
+        userProfile["member_count"] = row["member_count"]
+        userProfile["note_count"] = row["note_count"]
+
+        return userProfile
+
+
+    except MySQLdb.Error,e:
+        return None
+    finally:
+        cur.close()        
+
