@@ -201,3 +201,32 @@ def delete_note():
     else:
         return obj2json(RetModel(1000, dict_err_code[1000], {}) )    
     
+
+#for get all posts from my team & mine & public to me
+@notes_api.route("/api/get_posts", methods=['POST', 'GET'])
+def get_posts():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))        
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
+
+
+#for repost notes
+@notes_api.route("/api/repost", methods=['POST', 'GET'])
+def repost():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))        
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
