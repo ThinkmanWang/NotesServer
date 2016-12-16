@@ -49,6 +49,9 @@ def get_notes_list():
     if (request.form.get('limit', None) is None or request.form.get('offset', None) is None):
         return obj2json(RetModel(46, dict_err_code[46], {}) )    
 
+    if (False == request.form['limit'].isdigit() or False == request.form['offset'].isdigit()):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
 
     if (request.form.get('member_uid', None) is not None):
         lstNoteId = select_note_list(request.form['member_uid'], int(request.form['limit']), int(request.form['offset']), request.form.get('type', '0'))
