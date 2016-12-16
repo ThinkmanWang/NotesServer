@@ -130,7 +130,7 @@ def get_user_profile():
 
 #get my member list
 @user_api.route("/api/get_member_list", methods=['POST', 'GET'])
-def get_user_profile():
+def get_member_list():
     if request.method == 'GET':
         return obj2json(RetModel(1, dict_err_code[1], {}) )    
     
@@ -140,4 +140,5 @@ def get_user_profile():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
-    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    lstUser = db_get_member_list(request.form['uid'])
+    return obj2json(RetModel(0, dict_err_code[0], lstUser) )

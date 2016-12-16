@@ -276,3 +276,27 @@ def db_query_user_profile(szUid):
     finally:
         cur.close()        
 
+def db_get_member_list(szUid):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("select id, user_name, avatar, leader_uid, show_name, title from user where leader_uid=%s" \
+            , (szUid, ))
+
+    lstUser = []
+    try:
+        rows=cur.fetchall()
+        for row in rows:
+            user = {}
+            user["id"] = row["id"]
+            user["user_name"] = row["user_name"]
+            user["avatar"] = row["avatar"]
+            user["show_name"] = row["show_name"]
+            user["title"] = row["title"]
+            lstUser.append(user)
+
+
+        return lstUser
+    except MySQLdb.Error,e:
+        return lstUser
+    finally:
+        cur.close()        
