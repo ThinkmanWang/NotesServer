@@ -150,13 +150,13 @@ def update_note_info(uid, note):
     finally:
         cur.close()     
         
-def select_exists_note_list(uid):
+def select_exists_note_list(uid, szLimit, szOffset):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
 
-        cur.execute("select * from view_notes where uid=%s and is_deleted=0" , (uid, ))
+        cur.execute("select * from view_notes where uid=%s and is_deleted=0 limit %s offset %s" , (uid, szLimit, szOffset))
         
         rows=cur.fetchall()
         for row in rows:
@@ -169,13 +169,13 @@ def select_exists_note_list(uid):
     finally:
         cur.close()  
         
-def select_all_note_list(uid):
+def select_all_note_list(uid, szLimit, szOffset):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
 
-        cur.execute("select * from view_notes where uid=%s" , (uid, ))
+        cur.execute("select * from view_notes where uid=%s limit %s offset %s" , (uid, szLimit, szOffset))
         
         rows=cur.fetchall()
         for row in rows:
@@ -189,11 +189,11 @@ def select_all_note_list(uid):
         cur.close()  
     
     
-def select_note_list(uid, type=0):
+def select_note_list(uid, szLimit, szOffset, type=0):
     if (type.isdigit() and 0 == int(type)):
-        return select_all_note_list(uid)
+        return select_all_note_list(uid, szLimit, szOffset)
     else:
-        return select_exists_note_list(uid)
+        return select_exists_note_list(uid, szLimit, szOffset)
         
 def init_note(row):
     note = Note()
