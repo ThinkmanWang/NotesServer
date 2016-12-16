@@ -120,13 +120,22 @@ def get_user_profile():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    #TODO: add args member_Uid, return my profile if member_Uid is null, or return member's profile
-    userProfile = db_query_user_profile(request.form['uid'])
-    if (userProfile is None):
-        return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+    if (request.form.get('member_uid', None) is not None):
+        #get profile for my member
+        userProfile = db_query_user_profile(request.form['member_uid'])
+        if (userProfile is None):
+            return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+        else:
+            return obj2json(RetModel(0, dict_err_code[0], userProfile) )
+
     else:
-        return obj2json(RetModel(0, dict_err_code[0], userProfile) )
-    #TODO: this api could search user profile of my members
+        #get profile for myself
+        userProfile = db_query_user_profile(request.form['uid'])
+        if (userProfile is None):
+            return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
+        else:
+            return obj2json(RetModel(0, dict_err_code[0], userProfile) )
+        #TODO: this api could search user profile of my members
 
 #get my member list
 @user_api.route("/api/get_member_list", methods=['POST', 'GET'])
