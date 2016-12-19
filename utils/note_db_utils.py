@@ -211,6 +211,7 @@ def init_note(row):
     note["pic"] = row['pic']    
     note["update_date"] = row['update_date']    
     note["is_deleted"] = row['is_deleted']
+    note["repost_from"] = row['repost_from']
     
     return note
 
