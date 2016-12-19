@@ -45,11 +45,25 @@ def get_notes_list():
     
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
-    
-    lstNoteId = select_note_list(request.form['uid'], request.form.get('type', '0'))
-    szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
 
-    return szRet    
+    if (request.form.get('limit', None) is None or request.form.get('offset', None) is None):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+    if (False == request.form['limit'].isdigit() or False == request.form['offset'].isdigit()):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+
+    if (request.form.get('member_uid', None) is not None):
+        lstNoteId = select_note_list(request.form['member_uid'], int(request.form['limit']), int(request.form['offset']), request.form.get('type', '0'))
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
+
+        return szRet    
+
+    else:
+        lstNoteId = select_note_list(request.form['uid'], int(request.form['limit']), int(request.form['offset']), request.form.get('type', '0'))
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
+
+        return szRet    
 
 @notes_api.route("/api/get_note", methods=['POST', 'GET'])
 def get_note():
@@ -201,3 +215,41 @@ def delete_note():
     else:
         return obj2json(RetModel(1000, dict_err_code[1000], {}) )    
     
+
+#for get all posts from my team & mine & public to me
+@notes_api.route("/api/get_posts", methods=['POST', 'GET'])
+def get_posts():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))        
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    if (request.form.get('limit', None) is None or request.form.get('offset', None) is None):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+    if (False == request.form['limit'].isdigit() or False == request.form['offset'].isdigit()):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+    lstNotes = db_query_posts_public_to_me(request.form['uid'], request.form['limit'], request.form['offset'])
+    szRet = obj2json(RetModel(0, dict_err_code[0], lstNotes) )
+    return szRet    
+
+
+
+#for repost notes
+@notes_api.route("/api/repost", methods=['POST', 'GET'])
+def repost():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))        
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+
+    return obj2json(RetModel(1024, dict_err_code[1024], {}) )

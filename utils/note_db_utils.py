@@ -12,6 +12,7 @@ import hashlib
 import time
 
 from dbutils import * 
+from utils.user_db_utils import *  
 
 from models.User import User
 from models.Customer import Customer
@@ -150,13 +151,13 @@ def update_note_info(uid, note):
     finally:
         cur.close()     
         
-def select_exists_note_list(uid):
+def select_exists_note_list(uid, szLimit, szOffset):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
-    try:
-
-        cur.execute("select * from view_notes where uid=%s and is_deleted=0" , (uid, ))
+    try: 
+        szSql = "select * from view_notes where uid=" + szUid + " and is_deleted=0 limit " + szLimit + " offset" + szOffset
+        cur.execute(szSql)
         
         rows=cur.fetchall()
         for row in rows:
@@ -169,13 +170,13 @@ def select_exists_note_list(uid):
     finally:
         cur.close()  
         
-def select_all_note_list(uid):
+def select_all_note_list(uid, szLimit, szOffset):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
-
-        cur.execute("select * from view_notes where uid=%s" , (uid, ))
+        szSql = "select * from view_notes where uid=" + uid + " limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
         
         rows=cur.fetchall()
         for row in rows:
@@ -189,26 +190,28 @@ def select_all_note_list(uid):
         cur.close()  
     
     
-def select_note_list(uid, type=0):
+def select_note_list(uid, szLimit, szOffset, type=0):
     if (type.isdigit() and 0 == int(type)):
-        return select_all_note_list(uid)
+        return select_all_note_list(uid, szLimit, szOffset)
     else:
-        return select_exists_note_list(uid)
+        return select_exists_note_list(uid, szLimit, szOffset)
         
 def init_note(row):
-    note = Note()
-    note.id = row['id']
-    note.date = row['date']
-    note.customer_id = row['customer_id']
-    note.customer_name = row['customer_name']
-    note.address = row['address']
-    note.longitude = row['longitude']
-    note.latitude = row['latitude'] 
-    note.note = row['note']
-    note.thumbnail = row['thumbnail']
-    note.pic = row['pic']    
-    note.update_date = row['update_date']    
-    note.is_deleted = row['is_deleted']
+    note = {}
+    note["id"] = row['id']
+    note["uid"] = row['uid']
+    note["date"] = row['date']
+    note["customer_id"] = row['customer_id']
+    note["customer_name"] = row['customer_name']
+    note["address"] = row['address']
+    note["longitude"] = row['longitude']
+    note["latitude"] = row['latitude'] 
+    note["note"] = row['note']
+    note["thumbnail"] = row['thumbnail']
+    note["pic"] = row['pic']    
+    note["update_date"] = row['update_date']    
+    note["is_deleted"] = row['is_deleted']
+    note["repost_from"] = row['repost_from']
     
     return note
 
@@ -249,3 +252,45 @@ def remove_note(uid, id):
         return False
     finally:
         cur.close()     
+
+def db_query_posts_public_to_me(szUid, szLimit, szOffset):
+    #1. query uids of my members to list
+    #2. add my id into list
+    #3. query all posts in uid list
+    lstUser = []
+    lstUser.extend(db_get_member_list(szUid))
+    for user in lstUser:
+        lstUser.extend(db_get_member_list(str(user["id"])))
+
+
+    if (lstUser is None or 0 == len(lstUser)):
+        return []
+
+    user = lstUser[0]
+    szUids = "(" + str(user["id"])
+
+
+    for user in lstUser:
+        szUids += ", " + str(user["id"])
+
+    szUids += ", " + szUid + ")"
+
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    lstNotes = []
+    try:
+        szSql = "select * from view_notes where uid in " + szUids + " order by date desc limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
+        
+        rows=cur.fetchall()
+        for row in rows:
+            lstNotes.append(init_note(row))
+        
+        return lstNotes 
+
+    except MySQLdb.Error,e:
+        return lstNotes 
+    finally:
+        cur.close()  
+
+

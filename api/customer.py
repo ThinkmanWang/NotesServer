@@ -48,10 +48,16 @@ def get_customer_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
     
-    lstCustomer = select_customer_list(request.form['uid'], request.form.get('type', '0'))
-    szRet = obj2json(RetModel(0, dict_err_code[0], lstCustomer) )
+    if (request.form.get('member_uid', None) is not None):
+        lstCustomer = select_customer_list(request.form['member_uid'], request.form.get('type', '0'))
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstCustomer) )
+        return szRet
 
-    return szRet
+    else:
+        lstCustomer = select_customer_list(request.form['uid'], request.form.get('type', '0'))
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstCustomer) )
+
+        return szRet
 
 @customer_api.route("/api/get_customer", methods=['POST', 'GET'])
 def get_customer():
@@ -189,3 +195,17 @@ def delete_customer():
     
     szRet = obj2json(RetModel(1024, dict_err_code[1024], {}) )
     return szRet
+
+
+@customer_api.route("/api/job_transfer", methods=['POST', 'GET'])
+def job_transfer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
