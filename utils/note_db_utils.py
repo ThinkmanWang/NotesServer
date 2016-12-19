@@ -12,6 +12,7 @@ import hashlib
 import time
 
 from dbutils import * 
+from utils.user_db_utils import *  
 
 from models.User import User
 from models.Customer import Customer
@@ -154,9 +155,9 @@ def select_exists_note_list(uid, szLimit, szOffset):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
-    try:
-
-        cur.execute("select * from view_notes where uid=%s and is_deleted=0 limit %s offset %s" , (uid, szLimit, szOffset))
+    try: 
+        szSql = "select * from view_notes where uid=" + szUid + " and is_deleted=0 limit " + szLimit + " offset" + szOffset
+        cur.execute(szSql)
         
         rows=cur.fetchall()
         for row in rows:
@@ -174,8 +175,8 @@ def select_all_note_list(uid, szLimit, szOffset):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
-
-        cur.execute("select * from view_notes where uid=%s limit %s offset %s" , (uid, szLimit, szOffset))
+        szSql = "select * from view_notes where uid=" + uid + " limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
         
         rows=cur.fetchall()
         for row in rows:
@@ -249,3 +250,45 @@ def remove_note(uid, id):
         return False
     finally:
         cur.close()     
+
+def db_query_posts_public_to_me(szUid, szLimit, szOffset):
+    #1. query uids of my members to list
+    #2. add my id into list
+    #3. query all posts in uid list
+    lstUser = []
+    lstUser.extend(db_get_member_list(szUid))
+    for user in lstUser:
+        lstUser.extend(db_get_member_list(str(user["id"])))
+
+
+    if (lstUser is None or 0 == len(lstUser)):
+        return []
+
+    user = lstUser[0]
+    szUids = "(" + str(user["id"])
+
+
+    for user in lstUser:
+        szUids += ", " + str(user["id"])
+
+    szUids += ", " + szUid + ")"
+
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    lstNotes = []
+    try:
+        szSql = "select * from view_notes where uid in " + szUids + " order by date desc limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
+        
+        rows=cur.fetchall()
+        for row in rows:
+            lstNotes.append(init_note(row))
+        
+        return lstNotes 
+
+    except MySQLdb.Error,e:
+        return lstNotes 
+    finally:
+        cur.close()  
+
+

@@ -228,7 +228,16 @@ def get_posts():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
-    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    if (request.form.get('limit', None) is None or request.form.get('offset', None) is None):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+    if (False == request.form['limit'].isdigit() or False == request.form['offset'].isdigit()):
+        return obj2json(RetModel(46, dict_err_code[46], {}) )    
+
+    lstNotes = db_query_posts_public_to_me(request.form['uid'], request.form['limit'], request.form['offset'])
+    szRet = obj2json(RetModel(0, dict_err_code[0], lstNotes) )
+    return szRet    
+
 
 
 #for repost notes
