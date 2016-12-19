@@ -197,19 +197,20 @@ def select_note_list(uid, szLimit, szOffset, type=0):
         return select_exists_note_list(uid, szLimit, szOffset)
         
 def init_note(row):
-    note = Note()
-    note.id = row['id']
-    note.date = row['date']
-    note.customer_id = row['customer_id']
-    note.customer_name = row['customer_name']
-    note.address = row['address']
-    note.longitude = row['longitude']
-    note.latitude = row['latitude'] 
-    note.note = row['note']
-    note.thumbnail = row['thumbnail']
-    note.pic = row['pic']    
-    note.update_date = row['update_date']    
-    note.is_deleted = row['is_deleted']
+    note = {}
+    note["id"] = row['id']
+    note["uid"] = row['uid']
+    note["date"] = row['date']
+    note["customer_id"] = row['customer_id']
+    note["customer_name"] = row['customer_name']
+    note["address"] = row['address']
+    note["longitude"] = row['longitude']
+    note["latitude"] = row['latitude'] 
+    note["note"] = row['note']
+    note["thumbnail"] = row['thumbnail']
+    note["pic"] = row['pic']    
+    note["update_date"] = row['update_date']    
+    note["is_deleted"] = row['is_deleted']
     
     return note
 
