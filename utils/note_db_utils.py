@@ -213,6 +213,7 @@ def init_note(row):
     note["is_deleted"] = row['is_deleted']
     note["repost_from"] = row['repost_from']
     note["avatar"] = row['avatar']
+    note["author"] = row['author']
     
     return note
 
