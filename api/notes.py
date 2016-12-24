@@ -60,7 +60,7 @@ def get_notes_list():
         return szRet    
 
     else:
-        lstNoteId = select_note_list(request.form['uid'], int(request.form['limit']), int(request.form['offset']), request.form.get('type', '0'))
+        lstNoteId = select_note_list(request.form['uid'], request.form['limit'], request.form['offset'], request.form.get('type', '0'))
         szRet = obj2json(RetModel(0, dict_err_code[0], lstNoteId) )
 
         return szRet    
