@@ -258,6 +258,8 @@ def db_query_user_profile(szUid):
         row = rows[0]
         userProfile = {}
 
+        lstUser = db_get_all_member_list(szUid)
+
         userProfile["id"] = row["id"]
         userProfile["user_name"] = row["user_name"]
         userProfile["avatar"] = row["avatar"]
@@ -265,7 +267,7 @@ def db_query_user_profile(szUid):
         userProfile["leader_name"] = row["leader_name"]
 
         userProfile["show_name"] = row["show_name"]
-        userProfile["member_count"] = row["member_count"]
+        userProfile["member_count"] = len(lstUser)
         userProfile["note_count"] = row["note_count"]
 
         return userProfile
