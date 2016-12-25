@@ -236,6 +236,29 @@ def select_note(uid, id):
     finally:
         cur.close()    
         
+def select_note_for_member(uid, szLimit, szOffset):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)
+    lstNotes = []
+    try:
+        szSql = "select * from view_notes where uid=" + uid + "  order by date desc limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
+        #cur.execute("select * from view_notes where uid=%s" , (uid, ))
+        
+        rows=cur.fetchall()
+        if (len(rows) < 1):
+            return lstNotes
+        for row in rows:
+            lstNotes.append(init_note(row))
+        
+        return lstNotes 
+        
+    
+    except MySQLdb.Error,e:
+        return False
+    finally:
+        cur.close()    
+
 def remove_note(uid, id):
     conn = g_dbPool.connection()
     cur=conn.cursor()

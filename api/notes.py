@@ -234,9 +234,16 @@ def get_posts():
     if (False == request.form['limit'].isdigit() or False == request.form['offset'].isdigit()):
         return obj2json(RetModel(46, dict_err_code[46], {}) )    
 
-    lstNotes = db_query_posts_public_to_me(request.form['uid'], request.form['limit'], request.form['offset'])
-    szRet = obj2json(RetModel(0, dict_err_code[0], lstNotes) )
-    return szRet    
+
+    if (request.form.get('member_uid', None) is not None):
+        lstNotes = select_note_for_member(request.form['member_uid'], request.form['limit'], request.form['offset'])
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstNotes) )
+        return szRet    
+
+    else:
+        lstNotes = db_query_posts_public_to_me(request.form['uid'], request.form['limit'], request.form['offset'])
+        szRet = obj2json(RetModel(0, dict_err_code[0], lstNotes) )
+        return szRet    
 
 
 
