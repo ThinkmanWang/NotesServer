@@ -67,6 +67,12 @@ def set_leader():
 	
     if (False == db_is_user_exists(request.form["leader_id"])):
         return obj2json(RetModel(71, dict_err_code[71], {}) )    
+    
+    #check if my member
+    lstUser = db_get_member_list(request.form['uid'])
+    for user in lstUser:
+        if request.form["leader_id"] == User["id"]:
+            return obj2json(RetModel(74, dict_err_code[74], {}) )
 	
     if (False == db_set_user_leader(request.form['uid'], request.form["leader_id"])):
         return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
@@ -149,5 +155,5 @@ def get_member_list():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
-    lstUser = db_get_member_list(request.form['uid'])
+    lstUser = db_get_all_member_list(request.form['uid'])
     return obj2json(RetModel(0, dict_err_code[0], lstUser) )

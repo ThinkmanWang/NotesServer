@@ -276,6 +276,17 @@ def db_query_user_profile(szUid):
     finally:
         cur.close()        
 
+def db_get_all_member_list(szUid):
+    #1. query uids of my members to list
+    #2. add my id into list
+    #3. query all posts in uid list
+    lstUser = []
+    lstUser.extend(db_get_member_list(szUid))
+    for user in lstUser:
+        lstUser.extend(db_get_member_list(str(user["id"])))
+
+    return lstUser
+
 def db_get_member_list(szUid):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)

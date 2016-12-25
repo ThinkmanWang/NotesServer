@@ -29,6 +29,7 @@ dict_err_code = {
     , 71 : "leader id not found"
     , 72 : "avatar not set"
     , 73 : "show_name not set"
+    , 74 : "you cannot set your member as your leader"
     , 1000 : "Unknow error"
     , 1024 : "Developing"
 }
