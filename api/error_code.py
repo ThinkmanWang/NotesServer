@@ -18,6 +18,7 @@ dict_err_code = {
     , 44 : "note longitude not set"
     , 45 : "note latitude not set"
     , 46 : "limit or offset not set"
+    , 47 : "repost_from not set"
     , 50 : "alarm not found"
     , 51 : "alarm id not exists"
     , 52 : "alarm note id not set"

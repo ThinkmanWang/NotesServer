@@ -318,3 +318,22 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
         cur.close()  
 
 
+def db_repost_note(uid, note):
+    conn = g_dbPool.connection()
+    cur=conn.cursor()    
+    try:
+        count = cur.execute("insert into notes(id, uid, date, update_date, customer_id, thumbnail, pic, address, \
+                longitude, latitude, note, repost_from) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
+                , (note["id"], note["uid"], str(note["date"]), str(note["update_date"]), note["customer_id"], note["thumbnail"],
+                    note["pic"], note["address"], note["longitude"], note["latitude"], note["note"], note["repost_from"]))
+        conn.commit()
+        if (1 == count):
+            return True
+        else:
+            return False 
+                
+    except MySQLdb.Error,e:
+        print e
+        return False
+    finally:
+        cur.close()                

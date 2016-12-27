@@ -259,4 +259,44 @@ def repost():
     if (False == verify_user_token(request.form['uid'], request.form['token'])):
         return obj2json(RetModel(21, dict_err_code[21], {}) )    
 
-    return obj2json(RetModel(1024, dict_err_code[1024], {}) )
+    if (request.form.get('id', None) is None):
+        return obj2json(RetModel(41, dict_err_code[41], {}) )          
+    
+    if (request.form.get('address', None) is None):
+        return obj2json(RetModel(43, dict_err_code[43], {}) )    
+    
+    if (request.form.get('longitude', None) is None):
+        return obj2json(RetModel(44, dict_err_code[44], {}) )      
+    
+    if (request.form.get('latitude', None) is None):
+        return obj2json(RetModel(45, dict_err_code[45], {}) )       
+    
+    if (request.form.get('customer_id', None) is None):
+        return obj2json(RetModel(31, dict_err_code[31], {}) )     
+
+    if (request.form.get('note', None) is None):
+        return obj2json(RetModel(40, dict_err_code[40], {}) )        
+
+    if (request.form.get('repost_from', None) is None):
+        return obj2json(RetModel(47, dict_err_code[47], {}) )        
+    
+    note = {}
+    note["id"] = request.form['id']
+    note["uid"] = request.form['uid']
+    note["date"] = request.form.get('date', int(time.time()))
+    note["update_date"] = request.form.get('update_date', int(time.time()))
+    note["customer_id"] = request.form['customer_id']
+    note["address"] = request.form['address']
+    note["longitude"] = request.form['longitude']
+    note["latitude"] = request.form['latitude']
+    note["note"] = request.form['note']
+    note["thumbnail"] = request.form.get('thumbnail', '')
+    note["pic"] = request.form.get('pic', '')
+    note["repost_from"] = request.form.get('repost_from', '0')
+    
+    if (True == db_repost_note(request.form['uid'], note)):
+        szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
+    else:
+        szRet = obj2json(RetModel(1000, dict_err_code[1000], {}) )
+
+    return szRet    
