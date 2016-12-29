@@ -213,6 +213,11 @@ def init_note(row):
     note["repost_from"] = row['repost_from']
     note["avatar"] = row['avatar']
     note["author"] = row['author']
+
+    if note["repost_from"] == "0" :
+        note["repost_note"] = {}
+    else:
+        note["repost_note"] = db_select_note(note["repost_from"])
     
     return note
 
@@ -316,6 +321,26 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
         return lstNotes 
     finally:
         cur.close()  
+
+def db_select_note(szId):
+    conn = g_dbPool.connection()
+    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
+    try:
+        cur.execute("select * from view_notes where id=%s", (szId, ))
+        
+        rows=cur.fetchall()
+        if rows is None or 0 == len(rows):
+            return None
+
+        note = init_note(rows[0])
+        
+        return note
+
+    except MySQLdb.Error,e:
+        return None 
+    finally:
+        cur.close()  
+
 
 
 def db_repost_note(uid, note):
