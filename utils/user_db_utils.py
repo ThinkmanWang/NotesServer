@@ -208,6 +208,7 @@ def db_query_users():
             user["id"] = row["id"]
             user["user_name"] = row["user_name"]
             user["avatar"] = row["avatar"]
+            user["leader_uid"] = row["leader_uid"]
             user["show_name"] = row["show_name"]
             user["title"] = row["title"]
             lstUser.append(user)
@@ -303,6 +304,7 @@ def db_get_member_list(szUid):
             user["id"] = row["id"]
             user["user_name"] = row["user_name"]
             user["avatar"] = row["avatar"]
+            user["leader_uid"] = row["leader_uid"]
             user["show_name"] = row["show_name"]
             user["title"] = row["title"]
             lstUser.append(user)
