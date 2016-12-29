@@ -308,7 +308,8 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
-        szSql = "select * from view_notes where uid in " + szUids + " order by date desc limit " + szLimit + " offset " + szOffset
+        szSql = "select * from view_notes where uid in " + szUids + \
+                " or repost_from in (select id from view_notes where uid=" + szUid + ") order by date desc limit " + szLimit + " offset " + szOffset
         cur.execute(szSql)
         
         rows=cur.fetchall()
