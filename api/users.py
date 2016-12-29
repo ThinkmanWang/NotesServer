@@ -71,7 +71,7 @@ def set_leader():
     #check if my member
     lstUser = db_get_member_list(request.form['uid'])
     for user in lstUser:
-        if request.form["leader_id"] == User["id"]:
+        if request.form["leader_id"] == user["id"]:
             return obj2json(RetModel(74, dict_err_code[74], {}) )
 	
     if (False == db_set_user_leader(request.form['uid'], request.form["leader_id"])):
