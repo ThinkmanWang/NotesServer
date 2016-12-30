@@ -156,7 +156,7 @@ def select_exists_note_list(uid, szLimit, szOffset):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try: 
-        szSql = "select * from view_notes where uid=" + uid + " and is_deleted=0 limit " + szLimit + " offset" + szOffset
+        szSql = "select * from view_notes where uid=" + uid + "  and repost_from='0' and is_deleted=0 limit " + szLimit + " offset" + szOffset
         cur.execute(szSql)
         
         rows=cur.fetchall()
@@ -174,7 +174,7 @@ def select_all_note_list(uid, szLimit, szOffset):
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     lstNotes = []
     try:
-        szSql = "select * from view_notes where uid=" + uid + " limit " + str(szLimit) + " offset " + str(szOffset)
+        szSql = "select * from view_notes where uid=" + uid + " and repost_from='0' limit " + str(szLimit) + " offset " + str(szOffset)
         cur.execute(szSql)
         
         rows=cur.fetchall()
