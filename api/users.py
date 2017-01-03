@@ -19,6 +19,7 @@ from werkzeug import secure_filename
 
 from utils.mysql_python import MysqlPython
 from utils.object2json import obj2json
+from utils.customer_db_utils import *
 
 from models.RetModel import RetModel
 
@@ -141,7 +142,6 @@ def get_user_profile():
             return obj2json(RetModel(1000, dict_err_code[1000], {}) ) 
         else:
             return obj2json(RetModel(0, dict_err_code[0], userProfile) )
-        #TODO: this api could search user profile of my members
 
 #get my member list
 @user_api.route("/api/get_member_list", methods=['POST', 'GET'])
@@ -157,3 +157,26 @@ def get_member_list():
 
     lstUser = db_get_all_member_list(request.form['uid'])
     return obj2json(RetModel(0, dict_err_code[0], lstUser) )
+
+
+@user_api.route("/api/get_user_customer", methods=['POST', 'GET'])
+def get_user_customer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}) )    
+    
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))     
+    
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )    
+    
+    lstRet = []
+    if (request.form.get('member_uid', None) is not None):
+        #get profile for my member
+        lstRet = select_customer_list(request.form['member_uid'], '0')
+
+    else:
+        #get profile for myself
+        lstRet = select_customer_list(request.form['uid'], '0')
+    
+    return obj2json(RetModel(0, dict_err_code[0], lstRet) )

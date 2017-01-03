@@ -173,7 +173,7 @@ def select_all_customer_list(uid):
         return lstCustomer     
         
     except MySQLdb.Error,e:
-        return False
+        return []
     finally:
         cur.close()
     
