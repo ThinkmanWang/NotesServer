@@ -248,7 +248,9 @@ def db_query_user_profile(szUid):
     cur.execute("select id, user_name, avatar, leader_uid" \
             " , (select d.show_name from user as d where d.id=a.leader_uid) as leader_name" \
             " , show_name, (select count(*) from user as b where b.leader_uid=a.id) as member_count " \
-            " , (select count(*) from notes as c where c.uid=a.id) as note_count from user as a where a.id=%s;" \
+            " , (select count(*) from notes as c where c.uid=a.id) as note_count " \
+            " , (select count(*) from customer as d where d.uid=a.id) as customer_count" \
+            " from user as a where a.id=%s;" \
             , (szUid, ))
 
     try:
@@ -270,6 +272,7 @@ def db_query_user_profile(szUid):
         userProfile["show_name"] = row["show_name"]
         userProfile["member_count"] = len(lstUser)
         userProfile["note_count"] = row["note_count"]
+        userProfile["customer_count"] = row["customer_count"]
 
         return userProfile
 
