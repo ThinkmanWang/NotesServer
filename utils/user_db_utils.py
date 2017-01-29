@@ -11,8 +11,11 @@ import MySQLdb
 from DBUtils.PooledDB import PooledDB
 import hashlib
 import time
+import uuid
 
-from dbutils import * 
+from dbutils import *
+from utils.customer_db_utils import *
+from utils.note_db_utils import *
 
 #g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
@@ -318,3 +321,42 @@ def db_get_member_list(szUid):
         return lstUser
     finally:
         cur.close()        
+
+def db_transfer_user_data(szUidFrom, szUidDst):
+
+    # copy all customer, and note info from User src to user dst
+    # groups and alarm will not be copied
+
+    # select all customer from user src
+    # for each customer in user src, copy all notes
+    lstCustomer = select_all_customer_list(szUidFrom)
+    for customer in lstCustomer :
+        _customer = find_customer_by_name_address(szUidDst, customer.name, customer.address)
+        szCustomerId = None
+        if (_customer is None):
+            # No exist customer for user dst, create new customer for user dst
+            szCustomerId = str(uuid.uuid4())
+            _customer = customer
+            _customer.id = szCustomerId
+
+            if (False == insert_customer(szUidDst, _customer)):
+                return
+        else:
+            # customer exists, copy notes to exist customer
+            szCustomerId = _customer.id
+
+        # select all notes from user src for customer and insert to _customer
+        lstNotes = select_all_notes_for_customer(szUidFrom, customer.id)
+
+        for note in lstNotes :
+            #1. check if this note exist in user dst
+            if (find_notes(szUidDst, szCustomerId, note)):
+                continue
+
+            #2. insert
+            note["id"] = uuid.uuid4()
+            note["uid"] = szUidDst
+            note["customer_id"] = szCustomerId
+
+            insert_note(szUidDst, note)
+

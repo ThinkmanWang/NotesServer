@@ -24,7 +24,6 @@ from models.RetModel import RetModel
 from utils.user_db_utils import *  
 from utils.alarm_db_utils import *
 from utils.note_db_utils import *
-from models.Note import Note
 from models.Alarm import Alarm
 from error_code import *
 

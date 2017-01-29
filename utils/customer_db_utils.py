@@ -28,7 +28,7 @@ def insert_customer(uid, customer):
         else:
             try:
                 conn = g_dbPool.connection()
-                cur=conn.cursor()    
+                cur = conn.cursor()
                 count = cur.execute("insert into customer(id, uid, name, group_name, spell, address, longitude, latitude, boss, phone, email, description, update_date) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
                                     , (customer.id, uid, customer.name, customer.group_name, customer.spell, customer.address, customer.longitude, customer.latitude, customer.boss, customer.phone, customer.email, customer.description, customer.update_date))
                 conn.commit()
@@ -212,5 +212,25 @@ def select_customer(uid, id):
     
     except MySQLdb.Error,e:
         return False
+    finally:
+        cur.close()
+
+def find_customer_by_name_address(uid, szName, szAddress):
+    conn = g_dbPool.connection()
+    cur = conn.cursor(MySQLdb.cursors.DictCursor)
+
+    try:
+        cur.execute("select * from customer where uid=%s and name=%s and address=%s", (uid, szName, szAddress))
+
+        rows = cur.fetchall()
+        if (len(rows) < 1):
+            return None
+
+        row = rows[0]
+        customer = init_customer(row)
+        return customer
+
+    except MySQLdb.Error,e:
+        return None
     finally:
         cur.close()

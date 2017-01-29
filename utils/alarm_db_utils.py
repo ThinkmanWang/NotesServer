@@ -15,7 +15,6 @@ from dbutils import *
 
 from models.User import User
 from models.Customer import Customer
-from models.Note import Note
 from models.Alarm import Alarm
 
 def init_alarm(row):

@@ -1,5 +1,4 @@
 
-from Note import Note
 
 class Alarm(object):
     id = ''

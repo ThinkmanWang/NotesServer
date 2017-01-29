@@ -32,6 +32,7 @@ from error_code import *
 from flask import Blueprint
 user_api = Blueprint('user_api', __name__)
 import pdb
+import thread
 
 @user_api.route("/api/login", methods=['POST', 'GET'])
 def login():
@@ -180,3 +181,24 @@ def get_user_customer():
         lstRet = select_customer_list(request.form['uid'], '0')
     
     return obj2json(RetModel(0, dict_err_code[0], lstRet) )
+
+@user_api.route("/api/job_transfer", methods=['POST', 'GET'])
+def job_transfer():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}))
+
+    if (request.form.get('uid', None) is None or request.form.get('token', None) is None):
+        return obj2json(RetModel(21, dict_err_code[21]))
+
+    if (False == verify_user_token(request.form['uid'], request.form['token'])):
+        return obj2json(RetModel(21, dict_err_code[21], {}) )
+
+    if (request.form.get('uid_src', None) is None):
+        return obj2json(RetModel(80, dict_err_code[80], {}))
+
+    if (request.form.get('uid_dst', None) is None):
+        return obj2json(RetModel(81, dict_err_code[81], {}))
+
+    #thread.start_new_thread(db_transfer_user_data, (request.form["uid_src"], request.form["uid_dst"]))
+    db_transfer_user_data(request.form["uid_src"], request.form["uid_dst"])
+    return obj2json(RetModel(0, dict_err_code[0], {}) )

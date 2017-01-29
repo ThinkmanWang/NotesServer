@@ -24,7 +24,6 @@ from models.RetModel import RetModel
 
 from utils.user_db_utils import *  
 from utils.note_db_utils import *
-from models.Note import Note
 from error_code import *
 
 from flask import Blueprint
@@ -120,18 +119,18 @@ def add_note():
     if (request.form.get('note', None) is None):
         return obj2json(RetModel(40, dict_err_code[40], {}) )        
     
-    note = Note()
-    note.id = request.form['id']
-    note.uid = request.form['uid']
-    note.date = request.form['date']
-    note.update_date = request.form.get('update_date', int(time.time()))
-    note.customer_id = request.form['customer_id']
-    note.address = request.form['address']
-    note.longitude = request.form['longitude']
-    note.latitude = request.form['latitude']
-    note.note = request.form['note']
-    note.thumbnail = request.form.get('thumbnail', '')
-    note.pic = request.form.get('pic', '')
+    note = {}
+    note["id"] = request.form['id']
+    note["uid"] = request.form['uid']
+    note["date"] = request.form['date']
+    note["update_date"] = request.form.get('update_date', int(time.time()))
+    note["customer_id"] = request.form['customer_id']
+    note["address"] = request.form['address']
+    note["longitude"] = request.form['longitude']
+    note["latitude"] = request.form['latitude']
+    note["note"] = request.form['note']
+    note["thumbnail"] = request.form.get('thumbnail', '')
+    note["pic"] = request.form.get('pic', '')
     
     if (True == insert_note(request.form['uid'], note)):
         szRet = obj2json(RetModel(0, dict_err_code[0], {}) )
@@ -172,18 +171,18 @@ def update_note():
     if (request.form.get('note', None) is None):
         return obj2json(RetModel(40, dict_err_code[40], {}) )         
     
-    note = Note()
-    note.id = request.form['id']
-    note.uid = request.form['uid']
-    note.date = request.form['date']
-    note.update_date = request.form.get('update_date', int(time.time()))
-    note.customer_id = request.form['customer_id']
-    note.address = request.form['address']
-    note.longitude = request.form['longitude']
-    note.latitude = request.form['latitude']
-    note.note = request.form['note']
-    note.thumbnail = request.form.get('thumbnail', '')
-    note.pic = request.form.get('pic', '')
+    note = {}
+    note["id"] = request.form['id']
+    note["uid"] = request.form['uid']
+    note["date"] = request.form['date']
+    note["update_date"] = request.form.get('update_date', int(time.time()))
+    note["customer_id"] = request.form['customer_id']
+    note["address"] = request.form['address']
+    note["longitude"] = request.form['longitude']
+    note["latitude"] = request.form['latitude']
+    note["note"] = request.form['note']
+    note["thumbnail"] = request.form.get('thumbnail', '')
+    note["pic"] = request.form.get('pic', '')
     
     szRet = ''
     if (False == if_note_exists(note)):

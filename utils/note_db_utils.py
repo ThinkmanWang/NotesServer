@@ -16,13 +16,12 @@ from utils.user_db_utils import *
 
 from models.User import User
 from models.Customer import Customer
-from models.Note import Note
 
 def insert_note(uid, note):
     if (True == if_note_exists(note)):
         return update_note_info(uid, note)
     else:
-        if (is_note_deleted(note.id)):
+        if (is_note_deleted(note["id"])):
             if (is_note_need_restore(note)):
                 restore_note(note)
                 return update_note_info(uid, note)
@@ -34,7 +33,7 @@ def insert_note(uid, note):
             cur=conn.cursor()    
             try:
                 count = cur.execute("insert into notes(id, uid, date, update_date, customer_id, thumbnail, pic, address, longitude, latitude, note) values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) " \
-                                    , (note.id, note.uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note))
+                                    , (note["id"], note["uid"], note["date"], note["update_date"], note["customer_id"], note["thumbnail"], note["pic"], note["address"], note["longitude"], note["latitude"], note["note"]))
                 conn.commit()
                 if (1 == count):
                     return True
@@ -67,9 +66,9 @@ def is_note_need_restore(note):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)    
     try:
-        if (is_note_deleted(note.id)):
+        if (is_note_deleted(note["id"])):
             #check the update_date and confirm if need restore group
-            cur.execute("select * from notes where id=%s and is_deleted=1 and update_date < %s" , (note.id, note.update_date) )    
+            cur.execute("select * from notes where id=%s and is_deleted=1 and update_date < %s" , (note["id"], note["update_date"]) )
             rows=cur.fetchall()
             if (len(rows) < 1):
                 return False    
@@ -88,7 +87,7 @@ def restore_note(note):
     cur=conn.cursor()            
     try:
         count = cur.execute("update notes set update_date=%s, is_deleted=0 where id=%s " \
-                            , (note.update_date, note.id))
+                            , (note["update_date"], note["id"]))
         conn.commit()
         if (count >= 0):
             return True
@@ -105,7 +104,7 @@ def if_note_exists(note):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from notes where id=%s" , (note.id, ))
+        cur.execute("select * from notes where id=%s" , (note["id"], ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -122,7 +121,7 @@ def if_noteid_exists(id):
     conn = g_dbPool.connection()
     cur=conn.cursor(MySQLdb.cursors.DictCursor)
     try:
-        cur.execute("select * from notes where id=%s" , (id, ))
+        cur.execute("select * from notes where id=%s", (id, ))
         
         rows=cur.fetchall()
         if (len(rows) < 1):
@@ -132,14 +131,31 @@ def if_noteid_exists(id):
     except MySQLdb.Error,e:
         return False
     finally:
-        cur.close()        
-    
+        cur.close()
+
+def find_notes(szUid, szCustomerId, note):
+    conn = g_dbPool.connection()
+    cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        #cur.execute("select * from view_notes where id=%s and uid=%s", (id, uid))
+        cur.execute("select * from view_notes where uid=%s and customer_id=%s and note=%s and pic=%s", (szUid, szCustomerId, note["note"], note["pic"]))
+
+        rows = cur.fetchall()
+        if (len(rows) < 1):
+            return False
+        else:
+            return True
+    except MySQLdb.Error, e:
+        return False
+    finally:
+        cur.close()
+
 def update_note_info(uid, note):
     conn = g_dbPool.connection()
     cur=conn.cursor()
     try:
         count = cur.execute("update notes set uid=%s, date=%s, update_date = %s, customer_id=%s, thumbnail=%s, pic=%s, address=%s, longitude=%s, latitude=%s, note=%s, is_deleted=0 where id = %s and update_date <= %s" \
-                    , (uid, note.date, note.update_date, note.customer_id, note.thumbnail, note.pic, note.address, note.longitude, note.latitude, note.note, note.id, note.update_date))
+                    , (uid, note["date"], note["update_date"], note["customer_id"], note["thumbnail"], note["pic"], note["address"], note["longitude"], note["latitude"], note["note"], note["id"], note["update_date"]))
         
         conn.commit()
         if (count >= 0):
@@ -187,8 +203,25 @@ def select_all_note_list(uid, szLimit, szOffset):
         return lstNotes 
     finally:
         cur.close()  
-    
-    
+
+def select_all_notes_for_customer(szUid, szCustomerId):
+    conn = g_dbPool.connection()
+    cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    lstNotes = []
+    try:
+        cur.execute("select * from view_notes where uid=%s and customer_id=%s", (szUid, szCustomerId) )
+
+        rows = cur.fetchall()
+        for row in rows:
+            lstNotes.append(init_note(row))
+
+        return lstNotes
+
+    except MySQLdb.Error, e:
+        return lstNotes
+    finally:
+        cur.close()
+
 def select_note_list(uid, szLimit, szOffset, type=0):
     if (type.isdigit() and 0 == int(type)):
         return select_all_note_list(uid, szLimit, szOffset)
