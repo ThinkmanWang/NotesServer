@@ -1,21 +1,10 @@
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'models'))
-
-#print(sys.path)
-
-from mysql_python import MysqlPython
-import MySQLdb
-from DBUtils.PooledDB import PooledDB
-import hashlib
-import time
 
 from dbutils import * 
-from utils.user_db_utils import *  
 
-from models.User import User
-from models.Customer import Customer
+name = 'note_db_utils'
 
 def insert_note(uid, note):
     if (True == if_note_exists(note)):
@@ -314,47 +303,6 @@ def remove_note(uid, id):
         return False
     finally:
         cur.close()     
-
-def db_query_posts_public_to_me(szUid, szLimit, szOffset):
-    #1. query uids of my members to list
-    #2. add my id into list
-    #3. query all posts in uid list
-    lstUser = []
-    lstUser.extend(db_get_member_list(szUid))
-    for user in lstUser:
-        lstUser.extend(db_get_member_list(str(user["id"])))
-
-
-    if (lstUser is None or 0 == len(lstUser)):
-        return []
-
-    user = lstUser[0]
-    szUids = "(" + str(user["id"])
-
-
-    for user in lstUser:
-        szUids += ", " + str(user["id"])
-
-    szUids += ", " + szUid + ")"
-
-    conn = g_dbPool.connection()
-    cur=conn.cursor(MySQLdb.cursors.DictCursor)    
-    lstNotes = []
-    try:
-        szSql = "select * from view_notes where uid in " + szUids + \
-                " or repost_from in (select id from view_notes where uid=" + szUid + ") order by date desc limit " + szLimit + " offset " + szOffset
-        cur.execute(szSql)
-        
-        rows=cur.fetchall()
-        for row in rows:
-            lstNotes.append(init_note(row))
-        
-        return lstNotes 
-
-    except MySQLdb.Error,e:
-        return lstNotes 
-    finally:
-        cur.close()  
 
 def db_select_note(szId):
     conn = g_dbPool.connection()

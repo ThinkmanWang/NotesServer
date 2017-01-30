@@ -19,6 +19,7 @@ from utils.note_db_utils import *
 
 #g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
+name = 'user_db_utils'
 
 def get_all_users() :
     conn = g_dbPool.connection()
@@ -360,3 +361,42 @@ def db_transfer_user_data(szUidFrom, szUidDst):
 
             insert_note(szUidDst, note)
 
+
+def db_query_posts_public_to_me(szUid, szLimit, szOffset):
+    # 1. query uids of my members to list
+    # 2. add my id into list
+    # 3. query all posts in uid list
+    lstUser = []
+    lstUser.extend(db_get_member_list(szUid))
+    for user in lstUser:
+        lstUser.extend(db_get_member_list(str(user["id"])))
+
+    if (lstUser is None or 0 == len(lstUser)):
+        return []
+
+    user = lstUser[0]
+    szUids = "(" + str(user["id"])
+
+    for user in lstUser:
+        szUids += ", " + str(user["id"])
+
+    szUids += ", " + szUid + ")"
+
+    conn = g_dbPool.connection()
+    cur = conn.cursor(MySQLdb.cursors.DictCursor)
+    lstNotes = []
+    try:
+        szSql = "select * from view_notes where uid in " + szUids + \
+                " or repost_from in (select id from view_notes where uid=" + szUid + ") order by date desc limit " + szLimit + " offset " + szOffset
+        cur.execute(szSql)
+
+        rows = cur.fetchall()
+        for row in rows:
+            lstNotes.append(init_note(row))
+
+        return lstNotes
+
+    except MySQLdb.Error, e:
+        return lstNotes
+    finally:
+        cur.close()
