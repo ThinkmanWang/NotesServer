@@ -337,8 +337,21 @@ def db_transfer_user_data(szUidFrom, szUidDst):
         if (_customer is None):
             # No exist customer for user dst, create new customer for user dst
             szCustomerId = str(uuid.uuid4())
-            _customer = customer
+            _customer = Customer()
             _customer.id = szCustomerId
+            _customer.uid = customer.uid
+            _customer.name = customer.name
+            _customer.group_name = customer.group_name
+            _customer.spell = customer.spell
+            _customer.address = customer.address
+            _customer.longitude = customer.longitude
+            _customer.latitude = customer.latitude
+            _customer.boss = customer.boss
+            _customer.phone = customer.phone
+            _customer.email = customer.email
+            _customer.description = customer.description
+            _customer.update_date = customer.update_date
+            _customer.is_deleted = 0
 
             if (False == insert_customer(szUidDst, _customer)):
                 return
