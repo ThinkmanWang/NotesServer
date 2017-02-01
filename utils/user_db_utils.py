@@ -67,8 +67,8 @@ def create_user(user_name, szPwd):
         return False    
 
 def user_login(user_name, password, verify):
-    if (False == if_user_exists(user_name)):
-        create_user(user_name, "123456")
+    # if (False == if_user_exists(user_name)):
+    #     create_user(user_name, "123456")
         
     conn = g_dbPool.connection()
     cur=conn.cursor()
@@ -418,7 +418,22 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
 
 def db_send_password(szPhone):
     nPwd = random.randint(100000, 999999)
-    create_user(szPhone, str(nPwd))
+    if (False == if_user_exists(szPhone)):
+        create_user(szPhone, str(nPwd))
+    else:
+        conn = g_dbPool.connection()
+        cur = conn.cursor()
+        try:
+            count = cur.execute("update user set password=%s where user_name=%s" \
+                                , (hashlib.md5(str(nPwd)).hexdigest(), szPhone))
+            conn.commit()
+
+            if (count <= 0):
+                return False
+        except MySQLdb.Error, e:
+            return False
+        finally:
+            cur.close()
 
     szVars = "{\"code\":\"" + str(nPwd) + "\"}"
     args = {"appid":"13077", "to":szPhone, "project":"kVp87", "vars":szVars, "signature":"42135df3937b25e083cb242da70d42ac"}
