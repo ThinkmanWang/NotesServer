@@ -16,6 +16,8 @@ import uuid
 from dbutils import *
 from utils.customer_db_utils import *
 from utils.note_db_utils import *
+import random
+import requests
 
 #g_dbPool = PooledDB(MySQLdb, 5, host='thinkman-wang.com', user='thinkman', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
@@ -51,12 +53,12 @@ def if_user_exists(user_name):
     else:
         return True
     
-def create_user(user_name):
+def create_user(user_name, szPwd):
     #create user by cell phone number and send dynamic password
     conn = g_dbPool.connection()
     cur=conn.cursor()    
     count = cur.execute("insert into user(user_name, password) values (%s, %s) " \
-                        , (user_name, hashlib.md5("123456").hexdigest()))
+                        , (user_name, hashlib.md5(szPwd).hexdigest()))
     conn.commit()
 
     if (1 == count):
@@ -66,7 +68,7 @@ def create_user(user_name):
 
 def user_login(user_name, password, verify):
     if (False == if_user_exists(user_name)):
-        create_user(user_name)
+        create_user(user_name, "123456")
         
     conn = g_dbPool.connection()
     cur=conn.cursor()
@@ -413,3 +415,16 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
         return lstNotes
     finally:
         cur.close()
+
+def db_send_password(szPhone):
+    nPwd = random.randint(100000, 999999)
+    create_user(szPhone, str(nPwd))
+
+    szVars = "{\"code\":\"" + str(nPwd) + "\"}"
+    args = {"appid":"13077", "to":szPhone, "project":"kVp87", "vars":szVars, "signature":"42135df3937b25e083cb242da70d42ac"}
+
+    r = requests.post('https://api.submail.cn/message/xsend.json', data=args)
+    if (r.json()["status"] == "success"):
+        return True
+    else:
+        return False

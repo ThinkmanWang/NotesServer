@@ -202,3 +202,16 @@ def job_transfer():
     #thread.start_new_thread(db_transfer_user_data, (request.form["uid_src"], request.form["uid_dst"]))
     db_transfer_user_data(request.form["uid_src"], request.form["uid_dst"])
     return obj2json(RetModel(0, dict_err_code[0], {}) )
+
+@user_api.route("/api/get_password", methods=['POST', 'GET'])
+def get_password():
+    if request.method == 'GET':
+        return obj2json(RetModel(1, dict_err_code[1], {}))
+
+    if (request.form.get('phone', None) is None):
+        return obj2json(RetModel(22, dict_err_code[22], {}))
+
+    if (db_send_password(request.form['phone']) == True):
+        return obj2json(RetModel(0, dict_err_code[0], {}))
+    else:
+        return obj2json(RetModel(1000, dict_err_code[1000], {}))

@@ -5,6 +5,7 @@ dict_err_code = {
     , 11 : "No file"
     , 20 : "user_name or password or verify code is incorrect"
     , 21 : "Token incorrect"
+    , 22 : "phone number not found"
     , 30 : "Customer not found"
     , 31 : "Customer id not found"
     , 32 : "Customer name not set"
