@@ -386,11 +386,11 @@ def db_query_posts_public_to_me(szUid, szLimit, szOffset):
     for user in lstUser:
         lstUser.extend(db_get_member_list(str(user["id"])))
 
-    if (lstUser is None or 0 == len(lstUser)):
-        return []
+    # if (lstUser is None or 0 == len(lstUser)):
+    #     return []
 
-    user = lstUser[0]
-    szUids = "(" + str(user["id"])
+    # user = lstUser[0]
+    szUids = "(" + szUid
 
     for user in lstUser:
         szUids += ", " + str(user["id"])
