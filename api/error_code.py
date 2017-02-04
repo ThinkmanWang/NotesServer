@@ -32,6 +32,7 @@ dict_err_code = {
     , 72 : "avatar not set"
     , 73 : "show_name not set"
     , 74 : "you cannot set your member as your leader"
+    , 75 : "you cannot set yourself as your leader"
     , 80 : "job transfer error, cannot find uid_src"
     , 81 : "job transfer error, cannot find uid_dst"
     , 1000 : "Unknow error"

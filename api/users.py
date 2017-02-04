@@ -68,8 +68,11 @@ def set_leader():
         return obj2json(RetModel(70, dict_err_code[70], {}) )    
 	
     if (False == db_is_user_exists(request.form["leader_id"])):
-        return obj2json(RetModel(71, dict_err_code[71], {}) )    
-    
+        return obj2json(RetModel(71, dict_err_code[71], {}) )
+
+    if request.form["uid"] == request.form["leader_id"]:
+        return obj2json(RetModel(75, dict_err_code[75], {}))
+
     #check if my member
     lstUser = db_get_member_list(request.form['uid'])
     for user in lstUser:
