@@ -52,7 +52,6 @@ def worker():
         logging.info("create user %d %s ==> %s" % (g_nNum, szPhone, szPwd))
         create_random_user(szPhone, szPwd)
 
-THREAD_NUMBER = 150
 if __name__ == '__main__':
     try:
         pid = os.fork()
@@ -65,12 +64,12 @@ if __name__ == '__main__':
     print ("start add rendom user")
 
     threads = []
-    for i in range(1, THREAD_NUMBER):
+    for i in range(150):
         #create 150 thread for insert data
         t = threading.Thread(target=worker)
         t.start()
         threads.append(t)
 
-    for i in range(THREAD_NUMBER):
+    for i in range(150):
         threads[i].join()
 
