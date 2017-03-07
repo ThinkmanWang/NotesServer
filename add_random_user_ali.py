@@ -14,8 +14,16 @@ import logging
 from multiprocessing.pool import ThreadPool
 from Queue import Queue
 
+try:
+    pid = os.fork()
+    if pid > 0:
+        sys.exit(0)
+except OSError, e:
+    print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+    sys.exit(1)
 
-THREAD_NUM = 5
+THREAD_NUM = 150
+
 
 g_dbPool = PooledDB(MySQLdb, THREAD_NUM, host='rm-bp19rkb764945yh98o.mysql.rds.aliyuncs.com', user='root', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
@@ -27,6 +35,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 def create_random_user(user_name, szPwd):
     #create user by cell phone number and send dynamic password
+    global g_dbPool
     conn = g_dbPool.connection()
     cur=conn.cursor()
     count = cur.execute("insert into user(user_name, password) values (%s, %s) " \
@@ -37,6 +46,7 @@ def create_random_user(user_name, szPwd):
         return True
     else:
         return False
+
 
 g_nNum = 0
 g_lock = threading.Lock()
@@ -60,22 +70,16 @@ def worker(num):
 
 pool = ThreadPool(processes=THREAD_NUM)
 if __name__ == '__main__':
-    try:
-        pid = os.fork()
-        if pid > 0:
-            sys.exit(0)
-    except OSError, e:
-        print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
-        sys.exit(1)
 
     print ("start add rendom user")
 
     for i in range(THREAD_NUM):
         #create 150 thread for insert data
-        async_result = pool.apply_async(worker, (1, ))
+        async_result = pool.apply_async(worker, (i, ))
 
-    pool.close()
-    pool.join()
+    #pool.close()
+    #pool.join()
+    worker(151)
 
     #     t = threading.Thread(target=worker)
     #     t.start()

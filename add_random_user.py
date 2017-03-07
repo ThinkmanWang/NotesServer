@@ -11,7 +11,8 @@ import time
 import random
 import logging
 
-g_dbPool = PooledDB(MySQLdb, 5, host='127.0.0.1', user='notes', passwd='welc0me', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
+#g_dbPool = PooledDB(MySQLdb, 5, host='127.0.0.1', user='notes', passwd='welc0me', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
+g_dbPool = PooledDB(MySQLdb, 5, host='rm-bp19rkb764945yh98o.mysql.rds.aliyuncs.com', user='root', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
 logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',\
@@ -42,7 +43,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print ("start add rendom user")
-    for i in range(1, 2500000):
+    for i in range(1, 5000000):
         szPhone = str(random.randint(11111111111, 99999999999))
         szPwd = "123456"
         logging.info("create user %d %s ==> %s" % (i, szPhone, szPwd))
