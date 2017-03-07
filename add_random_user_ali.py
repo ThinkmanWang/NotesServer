@@ -11,6 +11,9 @@ import time
 import random
 import threading
 import logging
+from multiprocessing.pool import ThreadPool
+from Queue import Queue
+
 
 THREAD_NUM = 5
 
@@ -36,24 +39,26 @@ def create_random_user(user_name, szPwd):
         return False
 
 g_nNum = 0
-g_lock = threading.RLock()
+g_lock = threading.Lock()
 
-def worker():
+def worker(num):
     global g_nNum
     while (True):
         g_lock.acquire()
         if (g_nNum >= 5000000):
+            g_lock.release()
             break
         else:
             g_nNum += 1
-            continue
+
         g_lock.release()
 
         szPhone = str(random.randint(11111111111, 99999999999))
         szPwd = "123456"
-        logging.info("create user %d %s ==> %s" % (g_nNum, szPhone, szPwd))
+        logging.info("Thread %d create user %d %s ==> %s" % (num, g_nNum, szPhone, szPwd))
         create_random_user(szPhone, szPwd)
 
+pool = ThreadPool(processes=THREAD_NUM)
 if __name__ == '__main__':
     try:
         pid = os.fork()
@@ -65,15 +70,18 @@ if __name__ == '__main__':
 
     print ("start add rendom user")
 
-    threads = []
     for i in range(THREAD_NUM):
         #create 150 thread for insert data
-        t = threading.Thread(target=worker)
-        t.start()
-        threads.append(t)
+        async_result = pool.apply_async(worker, (1, ))
 
-    for i in range(THREAD_NUM):
-        threads[i].join()
+    pool.close()
+    pool.join()
 
+    #     t = threading.Thread(target=worker)
+    #     t.start()
+    #     threads.append(t)
+    #
+    # for i in range(THREAD_NUM):
+    #     threads[i].join()
     print("Exit")
     logging.info("Exit")
