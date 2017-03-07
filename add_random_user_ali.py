@@ -12,8 +12,9 @@ import random
 import threading
 import logging
 
+THREAD_NUM = 5
 
-g_dbPool = PooledDB(MySQLdb, 150, host='rm-bp19rkb764945yh98o.mysql.rds.aliyuncs.com', user='root', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
+g_dbPool = PooledDB(MySQLdb, THREAD_NUM, host='rm-bp19rkb764945yh98o.mysql.rds.aliyuncs.com', user='root', passwd='Ab123456', db='db_notes', port=3306, charset = "utf8", use_unicode = True);
 
 logging.basicConfig(level=logging.DEBUG,
     format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',\
@@ -38,6 +39,7 @@ g_nNum = 0
 g_lock = threading.RLock()
 
 def worker():
+    global g_nNum
     while (True):
         g_lock.acquire()
         if (g_nNum >= 5000000):
@@ -64,12 +66,14 @@ if __name__ == '__main__':
     print ("start add rendom user")
 
     threads = []
-    for i in range(150):
+    for i in range(THREAD_NUM):
         #create 150 thread for insert data
         t = threading.Thread(target=worker)
         t.start()
         threads.append(t)
 
-    for i in range(150):
+    for i in range(THREAD_NUM):
         threads[i].join()
 
+    print("Exit")
+    logging.info("Exit")
