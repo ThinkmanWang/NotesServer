@@ -33,5 +33,5 @@ Twisted-Names==13.2.0
 Twisted-Web==13.2.0
 urllib3==1.13.1
 uuid==1.30
-Werkzeug==0.11.15
+Werkzeug==0.15.3
 zope.interface==4.0.5
